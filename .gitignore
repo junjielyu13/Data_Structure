@@ -34,5 +34,6 @@
 
 #NetBeans project file
 *.dep.inc
-nbproject
+nbproject/
 build
+
