@@ -1,5 +1,5 @@
-# **Data_structure_Project**
--------------------------  
+# <center> **Data_structure_Project** </center>
+-----------------------------------------------
 
 - 1- List  
    - 1.1: Vector
@@ -28,6 +28,9 @@
    -  6.3: Leftist Heaps  
    -  6.4: Skew Heaps  
 - 7- Graph  
+----------------------------------------------
+
+
 
 
   
