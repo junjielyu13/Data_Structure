@@ -35,5 +35,6 @@
 #NetBeans project file
 *.dep.inc
 nbproject/
+dist
 build
 

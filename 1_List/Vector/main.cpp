@@ -61,6 +61,7 @@ int main(int argc, char** argv) {
     }
     for(int i=0; i<test1.size(); i++){
         std::cout << test1[i] << " ";
+        std::cout << test1.at(i) << " ";
     }
     std::cout<<std::endl;
 

@@ -30,7 +30,16 @@ class Stack {
 
 
         Stack(const Stack& orig): objects(nullptr){
-            this->operator=(orig);
+            if(this != &orig){
+                delete []objects;
+                this->_top = orig._top;
+                this->capacity = orig.capacity;
+
+                this->objects = new Object[this->capacity];
+                for(int i=0; i<this->size(); i++){
+                    objects[i] = orig.objects[i];
+                }
+            }   
         }
 
 
@@ -38,19 +47,6 @@ class Stack {
             delete []objects;
         }
 
-
-        const Stack& operator=(const Stack &stack){
-            if(this != &stack){
-                delete []objects;
-                this->_top = stack._top;
-                this->capacity = stack.capacity;
-
-                this->objects = new Object[this->capacity];
-                for(int i=0; i<this->size(); i++){
-                    objects[i] = stack.objects[i];
-                }
-            }
-        }
 
 
         void push(const Object& x){
@@ -74,6 +70,14 @@ class Stack {
                 throw std::out_of_range("Exception: out_of_range");
             }
             --_top;
+        }
+
+
+        Object& top(){
+            if(this->empty()){
+                throw std::out_of_range("Exception: out_of_range");
+            }
+            return objects[this->_top];
         }
 
 

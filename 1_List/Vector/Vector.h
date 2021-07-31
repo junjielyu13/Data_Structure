@@ -15,8 +15,8 @@ class Vector {
 
     public:
 
-        explicit Vector(int initSize = 0): Size(initSize), Capacity(initSize + SPARE_CAPACITY){
-            this->objects = new Object[Capacity];
+        explicit Vector(int initSize = 0): _size(initSize), _capacity(initSize + SPARE_CAPACITY){
+            this->objects = new Object[_capacity];
         }
 
 
@@ -33,8 +33,8 @@ class Vector {
         const Vector& operator=(const Vector &vector){
             if(this != &vector){
                 delete []objects;
-                this->Size = vector.size();
-                this->Capacity = vector.capacity();
+                this->_size = vector.size();
+                this->_capacity = vector.capacity();
                 
                 this->objects = new Object[this->capacity()];
                 for(int i=0; i<this->size(); i++){
@@ -56,36 +56,49 @@ class Vector {
         }
 
 
+        Object& at(int index){
+            return objects[index];
+        }
+
+
+        const Object& at(int index) const{
+            return objects[index];
+        }
+
+
         void push_back(const Object& x){
-            if(this->Size == this->Capacity){
-                this->reserve(2 * this->Capacity + 1);
+            if(this->_size == this->_capacity){
+                this->reserve(2 * this->_capacity + 1);
             }
-            objects[this->Size++] = x;
+            objects[this->_size++] = x;
         }
 
 
         void pop_back(){
-            this->Size--;
+            if(this->empty()){
+                throw std::out_of_range("Exception: out_of_range");
+            }
+            this->_size--;
         }
 
         
         void clear(){
-            this->Size = 0;
+            this->_size = 0;
         }
 
 
         const Object& back() const{
-            return objects[this->Size - 1];
+            return objects[this->_size - 1];
         }
 
 
         int size() const{
-            return this->Size;
+            return this->_size;
         }
 
 
         int capacity() const{
-            return this->Capacity;
+            return this->_capacity;
         }
 
 
@@ -95,26 +108,26 @@ class Vector {
 
 
         void resize(int newSize){
-            if(newSize > this->Capacity){
+            if(newSize > this->_capacity){
                 reserve(newSize * 2 + 1);
             }
-            this->Size = newSize;
+            this->_size = newSize;
         }
 
 
         void reserve(int newCapacity){
-            if(newCapacity < this->Size){
+            if(newCapacity < this->_size){
                 return;
             }    
 
             Object *oldArray = objects;
             objects = new Object[newCapacity];
 
-            for(int i=0; i<this->Size; i++){
+            for(int i=0; i<this->_size; i++){
                 objects[i] = oldArray[i];
             }
 
-            this->Capacity = newCapacity;
+            this->_capacity = newCapacity;
             delete []oldArray;
         }
 
@@ -146,8 +159,8 @@ class Vector {
 
 
     private:
-        int Size;
-        int Capacity;
+        int _size;
+        int _capacity;
         Object *objects;
 
 };
