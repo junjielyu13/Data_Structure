@@ -33,12 +33,14 @@ class SimpleLinkedList {
         SimpleLinkedList(){
             _size = 0;
             _head = nullptr;
+            _tail = nullptr;
         }
 
 
         SimpleLinkedList(const SimpleLinkedList& orig){
             _size = 0;
             _head = nullptr;
+            _tail = nullptr;
             *this = orig;
         }
 
@@ -56,13 +58,19 @@ class SimpleLinkedList {
                 return *this;
             }
 
+            Object aux[list._size];
+            int pos = 0;
             Node *p = list._head;
             while(p != nullptr){
-                this->push(p->data);
+                aux[pos] = p->data;
                 p = p->next;
+                pos++;
+            }
+            for(int i=pos; i>0; i--){
+                this->push(aux[i]);
             }
             delete p;
-            return *this;
+            return *this;     
         }
 
 
@@ -70,6 +78,7 @@ class SimpleLinkedList {
             if(_head == nullptr){
                 Node *p = new Node(x, nullptr);
                 _head = p;
+                _tail = p;
             }else{
                 Node *p = new Node(x, _head);
                 _head = p;
@@ -84,11 +93,17 @@ class SimpleLinkedList {
                 throw std::out_of_range("Exception: out_of_range.");
             }
             Node *p = _head;
-            while(p->next->next!=nullptr){
-                p = p->next;
+            if(_head == _tail){
+                delete _tail;
+                _tail = nullptr;
+                _head = nullptr;
+            }else{
+                while(p->next != _tail){
+                    p = p->next;
+                }
+                delete _tail;
+                _tail = p;  
             }
-            delete p->next;
-            p->next = nullptr;
             _size--;
         }
 
@@ -110,21 +125,13 @@ class SimpleLinkedList {
             if(empty()){
                 throw std::out_of_range("Exception: out_of_range.");
             }
-            Node *p = _head;
-            while(p->next != nullptr){
-                p = p->next;
-            }
-            return p->data;
+            return _tail->data;
         }
         const Object& back() const{
             if(empty()){
                 throw std::out_of_range("Exception: out_of_range.");
             }
-            Node *p = _head;
-            while(p->next != nullptr){
-                p = p->next;
-            }
-            return p->data;
+            return _tail->data;
         }
 
 
@@ -138,6 +145,7 @@ class SimpleLinkedList {
     private:
         int _size;
         Node* _head;
+        Node* _tail;
         
 
 };

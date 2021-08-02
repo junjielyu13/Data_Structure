@@ -21,6 +21,7 @@ int main(int argc, char** argv) {
     DoublyLinkedList<int> test1;
 
     test1.push_back(1);  test1.push_back(2); test1.push_front(99);
+    std::cout << std::endl;
     for(DoublyLinkedList<int> ::iterator itr=test1.begin(); itr!=test1.end(); itr++){
         std::cout << *itr << " ";
     }
@@ -50,8 +51,16 @@ int main(int argc, char** argv) {
     for(DoublyLinkedList<int> ::iterator itr=test1.begin(); itr!=test1.end(); itr++){
         std::cout << *itr  << " ";
     }
-    
 
+    std::cout<<std::endl;
+
+    std::cout << "---------------------------------------------\n";
+    test1.clear();
+    std::cout << "size test1 : " << test1.size() << std::endl;
+
+    std::cout << "---------------------------------------------\n";
+
+    std::cout << "finish\n";
     return 0;
 }
 

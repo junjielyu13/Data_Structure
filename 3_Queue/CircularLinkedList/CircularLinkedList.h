@@ -35,12 +35,14 @@ class CircularLinkedList {
         CircularLinkedList(){
             _size = 0;
             _head = nullptr;
+            _tail = nullptr;
         }
 
 
         CircularLinkedList(const CircularLinkedList& orig){
             _size = 0;
             _head = nullptr;
+            _tail = nullptr;
             *this = orig;
         }
 
@@ -50,6 +52,7 @@ class CircularLinkedList {
                 pop();
             }
             delete _head;
+            delete _tail;
         }
 
 
@@ -58,10 +61,16 @@ class CircularLinkedList {
                 return *this;
             }
 
+            Object aux[list._size];
+            int pos = 0;
             Node *p = list._head;
             while(p != nullptr){
-                this->push(p->data);
+                aux[pos] = p->data;
                 p = p->next;
+                pos++;
+            }
+            for(int i=pos; i>0; i--){
+                this->push(aux[i]);
             }
             delete p;
             return *this;            
@@ -71,9 +80,13 @@ class CircularLinkedList {
         void push(const Object& x){
 
             Node *p = new Node(x, _head);
-            _head = p;
+            if(_head == nullptr){
+                _head = p;
+                _tail = p;
+            }else{
+                _head = p;
+            }
             _size++;
-
         }
 
         void pop(){
@@ -81,13 +94,19 @@ class CircularLinkedList {
                 throw std::out_of_range("Exception: out_of_range.");
             }
             Node *p = _head;
-            while(p->next->next!=nullptr){
-                p = p->next;
+            if(_head == _tail){
+                delete _tail;
+                _tail = nullptr;
+                delete _head;
+                _head = nullptr;
+            }else{
+                while(p->next != _tail){
+                    p = p->next;
+                }
+                delete _tail;
+                _tail = p;    
             }
-            delete p->next;
-            p->next = nullptr;
-            p->next = _head;   
-            _size--;      
+            _size--; 
         }
 
 
@@ -109,25 +128,14 @@ class CircularLinkedList {
             if(empty()){
                 throw std::out_of_range("Exception: out_of_range.");
             }
-            Node *p = _head;
-            int i = 0;
-            while(p->next != _head && i == (this->_size - 1)){
-                p = p->next;
-                i++;
-            }
-            return p->data;
+            return _tail->data;
         }
 
         const Object& back() const{
             if(empty()){
                 throw std::out_of_range("Exception: out_of_range.");
             }
-            Node *p = _head;
-            while(p->next != _head){
-                p = p->next;
-            }
-            return p->data;
-
+            return _tail->data;
         }
 
         int size() const{
@@ -140,6 +148,7 @@ class CircularLinkedList {
     private:
         int _size;
         Node* _head;
+        Node* _tail;
 
 };
 

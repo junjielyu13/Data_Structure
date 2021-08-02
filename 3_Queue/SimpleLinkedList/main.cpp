@@ -38,6 +38,18 @@ int main(int argc, char** argv) {
         test1.pop();
     }
     std::cout << std::endl;
+
+    std::cout << "-----------------------------------------------\n";
+
+    while (!test2.empty()){
+        std::cout << test2.back() << " ";
+        test2.pop();
+    }
+    std::cout << std::endl;
+
+    std::cout << "-----------------------------------------------\n";
+
+    std::cout << "finish\n";
     
 
     return 0;

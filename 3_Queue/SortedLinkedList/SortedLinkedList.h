@@ -5,21 +5,21 @@
  */
 
 /* 
- * File:   DoublyLinkedList.h
+ * File:   SortedLinkedList.h
  * Author: Junjie_Li
  *
- * Created on July 31, 2021, 12:58 AM
+ * Created on August 2, 2021, 7:16 PM
  */
 
-#ifndef DOUBLYLINKEDLIST_H
-#define DOUBLYLINKEDLIST_H
+#ifndef SORTEDLINKEDLIST_H
+#define SORTEDLINKEDLIST_H
 
 #include <stdexcept>
 #include <iostream>
 
 template <typename Object>
-class DoublyLinkedList {
-    
+class SortedLinkedList {
+  
     private:
         struct Node{
             Object data;
@@ -69,7 +69,7 @@ class DoublyLinkedList {
             
 
             protected:
-                const DoublyLinkedList<Object> *List;
+                const SortedLinkedList<Object> *List;
                 Node *current;
 
 
@@ -79,12 +79,12 @@ class DoublyLinkedList {
 
                 const_iterator(Node *p): current(p){
                 }
-                const_iterator(const DoublyLinkedList<Object>& list, Node *p):
+                const_iterator(const SortedLinkedList<Object>& list, Node *p):
                     List(&list), current(p){
                 }
 
 
-                friend class DoublyLinkedList<Object>;
+                friend class SortedLinkedList<Object>;
 
         };
         
@@ -124,32 +124,30 @@ class DoublyLinkedList {
                 iterator(Node* p): const_iterator(p){
                 }
 
-                iterator(const DoublyLinkedList<Object>& list, Node *p): const_iterator(list, p){
+                iterator(const SortedLinkedList<Object>& list, Node *p): const_iterator(list, p){
                 }
 
 
-                friend class DoublyLinkedList<Object>;
+                friend class SortedLinkedList<Object>;
 
         };
-        
+
 
     public:
-        DoublyLinkedList(){
+        SortedLinkedList(){
             this->init();
         }
-
-        DoublyLinkedList(const DoublyLinkedList& orig){
+        SortedLinkedList(const SortedLinkedList& orig){
             this->init();
             *this = orig;
         }
-
-        virtual ~DoublyLinkedList(){
+        virtual ~SortedLinkedList(){
             this->clear();
             delete this->head;
             delete this->tail;
         }
 
-        const DoublyLinkedList& operator=(const DoublyLinkedList& list){
+        const SortedLinkedList& operator=(const SortedLinkedList& list){
             if(this == &list){
                 return *this;
             }
@@ -162,33 +160,52 @@ class DoublyLinkedList {
             return *this;
         }
 
-
-        void push_front(const Object& x){
+        void add(const Object& x){
             Node* p;
-            if(this->head == nullptr){
+            if(head == nullptr){
+                std::cout << "test1\n";
                 p = new Node(x, nullptr, nullptr);
                 head = p;
                 tail = p;
             }else{
-                p = new Node(x, nullptr, head);
-                head->prev = p;
-                head = p;
-            }
-        }
-        void push_back(const Object& x){
-            Node* p;
-            if(this->tail == nullptr){
-                p = new Node(x, nullptr, nullptr);
-                head = p;
-                tail = p;
-            }else{
-                p = new Node(x, tail, nullptr);
-                tail->next = p;
-                tail = p;
+                if( x > head->data){
+                    std::cout << "test2\n";
+                    Node* aux = head;
+                    while(x > aux->data){
+                        if(aux == tail){
+                            break;
+                        }
+                        aux = aux->next;
+                    }
+                    std::cout << "aux data: " << aux->data << std::endl;
+                    if(aux == tail){
+                        if(x > tail->data){
+                            std::cout << "test3\n";
+                            p = new Node(x, tail, nullptr);
+                            tail->next = p;
+                            p->prev = tail;
+                            tail = p;
+                        }else{
+                            std::cout << "test5\n";
+                            p = new Node(x, aux->prev, aux);
+                            p->prev->next = p;
+                            aux->prev = p;
+                        }
+                    }else{
+                        std::cout << "test5\n";
+                        p = new Node(x, aux->prev, aux);
+                        p->prev->next = p;
+                        aux->prev = p;
+                    }
+                }else{
+                    std::cout << "test4\n";
+                    p = new Node(x, nullptr, head);
+                    head->prev = p;
+                    head = p;
+                }
             }
             _size++;
         }
-
 
         void pop_front(){
 
@@ -296,8 +313,6 @@ class DoublyLinkedList {
             }
             return end;
         }
-        
-
 
     private:
         int _size;
@@ -310,8 +325,7 @@ class DoublyLinkedList {
             this->tail = nullptr;
         }
 
-
 };
 
-#endif /* DOUBLYLINKEDLIST_H */
+#endif /* SORTEDLINKEDLIST_H */
 

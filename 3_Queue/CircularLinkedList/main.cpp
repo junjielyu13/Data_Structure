@@ -29,17 +29,30 @@ int main(int argc, char** argv) {
 
     CircularLinkedList<int> test2(test1);
     test2.pop();
-    std::cout << "test1 back: " << test1.back() << " ,size : "<< test1.size() <<std::endl;
-    std::cout << "test2 back: " << test2.back() << " ,size : "<< test2.size() <<std::endl;
+    std::cout << "test1 back: " << test1.back() << " ,front: " << test1.front() <<" ,size : "<< test1.size() <<std::endl;
+    std::cout << "test2 back: " << test2.back() << " ,front: " << test2.front() << " ,size : "<< test2.size() <<std::endl;
 
     std::cout << "-----------------------------------------------\n";
 
-
+    std::cout << "Test1: ";
     while (!test1.empty()){
         std::cout << test1.back() << " ";
         test1.pop();
     }
     std::cout << std::endl;
+
+    std::cout << "-----------------------------------------------\n";
+
+    std::cout << "Test2: ";
+    while (!test2.empty()){
+        std::cout << test2.back() << " ";
+        test2.pop();
+    }
+    std::cout << std::endl;
+
+    std::cout << "-----------------------------------------------\n";
+
+    std::cout <<"finish\n";
 
     return 0;
 }
