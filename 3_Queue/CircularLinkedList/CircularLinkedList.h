@@ -5,19 +5,20 @@
  */
 
 /* 
- * File:   SimpleLinkedList.h
+ * File:   CircularLinkedList.h
  * Author: Junjie_Li
  *
- * Created on July 31, 2021, 11:35 PM
+ * Created on August 1, 2021, 5:51 PM
  */
 
-#ifndef SIMPLELINKEDLIST_H
-#define SIMPLELINKEDLIST_H
+#ifndef CIRCULARLINKEDLIST_H
+#define CIRCULARLINKEDLIST_H
 
 #include <stdexcept>
+#include <iostream>
 
 template <typename Object>
-class SimpleLinkedList {
+class CircularLinkedList {
 
     private:
         struct Node{
@@ -29,29 +30,30 @@ class SimpleLinkedList {
             }
         };
         
+
     public:
-        SimpleLinkedList(){
+        CircularLinkedList(){
             _size = 0;
             _head = nullptr;
         }
 
 
-        SimpleLinkedList(const SimpleLinkedList& orig){
+        CircularLinkedList(const CircularLinkedList& orig){
             _size = 0;
             _head = nullptr;
             *this = orig;
         }
 
 
-        virtual ~SimpleLinkedList(){
+        virtual ~CircularLinkedList(){
             while(!empty()){
                 pop();
             }
             delete _head;
         }
 
-        
-        const SimpleLinkedList& operator=(const SimpleLinkedList& list){
+
+        const CircularLinkedList& operator=(const CircularLinkedList& list){
             if (this == &list){
                 return *this;
             }
@@ -62,22 +64,17 @@ class SimpleLinkedList {
                 p = p->next;
             }
             delete p;
-            return *this;
+            return *this;            
         }
 
 
         void push(const Object& x){
-            if(_head == nullptr){
-                Node *p = new Node(x, nullptr);
-                _head = p;
-            }else{
-                Node *p = new Node(x, _head);
-                _head = p;
-            }
+
+            Node *p = new Node(x, _head);
+            _head = p;
             _size++;
 
         }
-
 
         void pop(){
             if(empty()){
@@ -89,7 +86,8 @@ class SimpleLinkedList {
             }
             delete p->next;
             p->next = nullptr;
-            _size--;
+            p->next = _head;   
+            _size--;      
         }
 
 
@@ -105,28 +103,32 @@ class SimpleLinkedList {
             }
             return _head->data;
         }
-        
+
+
         Object& back(){
             if(empty()){
                 throw std::out_of_range("Exception: out_of_range.");
             }
             Node *p = _head;
-            while(p->next != nullptr){
+            int i = 0;
+            while(p->next != _head && i == (this->_size - 1)){
                 p = p->next;
+                i++;
             }
             return p->data;
         }
+
         const Object& back() const{
             if(empty()){
                 throw std::out_of_range("Exception: out_of_range.");
             }
             Node *p = _head;
-            while(p->next != nullptr){
+            while(p->next != _head){
                 p = p->next;
             }
             return p->data;
-        }
 
+        }
 
         int size() const{
             return _size;
@@ -138,9 +140,8 @@ class SimpleLinkedList {
     private:
         int _size;
         Node* _head;
-        
 
 };
 
-#endif /* SIMPLELINKEDLIST_H */
+#endif /* CIRCULARLINKEDLIST_H */
 
