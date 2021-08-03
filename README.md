@@ -21,6 +21,7 @@
    -  4.6: Red-Black Trees  
    -  4.7: AA-Trees  
    -  4.8: k-d Trees  
+   -  4.9: Tree Traversals
 - 5- Hashing  
 - 6- Heaps  
    -  6.1: Binary Heap  
