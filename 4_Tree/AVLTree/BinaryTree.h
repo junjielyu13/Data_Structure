@@ -20,7 +20,7 @@
 template <typename Comparable>
 class BinaryTree {
 
-    private:
+    protected:
         struct BinaryNode{
             Comparable element;
             BinaryNode *left;
@@ -30,7 +30,6 @@ class BinaryTree {
                 element(theElement), left(lt), right(rt){
             }
         };
-
 
     public:
         BinaryTree(){
@@ -125,7 +124,7 @@ class BinaryTree {
         }
 
 
-    private:
+    protected:
         BinaryNode *root;
 
 
