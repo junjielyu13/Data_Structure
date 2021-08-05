@@ -142,9 +142,6 @@ class BinaryTree {
         }
 
         void remove(const Comparable& x, BinaryNode* &t) const{
-            if(t == nullptr){
-                return;     //item not found; do nothing
-            }
             if(x < t->element){
                 remove(x, t->left);
             }else if(t->element < x){

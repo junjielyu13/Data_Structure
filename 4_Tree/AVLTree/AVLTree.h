@@ -16,11 +16,20 @@
 
 #include <stdexcept>
 #include <iostream>
-#include "BinaryTree.h"
 
 template <typename Comparable>
+class AVLTree{
 
-class AVLTree : protected BinaryTree<Comparable>{
+    private:
+        struct AVLNode{
+            Comparable element;
+            AVLNode *left;
+            AVLNode *right;
+
+            AVLNode(const Comparable& theElement, AVLNode *lt, AVLNode *rt):
+                element(theElement), left(lt), right(rt){
+            }
+        };
 
     public:
         AVLTree(){
@@ -46,18 +55,18 @@ class AVLTree : protected BinaryTree<Comparable>{
             if(isEmpty()){
                 throw std::out_of_range("Exception: Empty Tree.");
             }
-            return BinaryTree<Comparable>::findMin(avlRoot)->element;
+            return findMin(avlRoot)->element;
         }
         const Comparable& findMax() const{
             if(isEmpty()){
                 throw std::out_of_range("Exception: Empty Tree.");
             }
-            return BinaryTree<Comparable>::findMax(avlRoot)->element;
+            return findMax(avlRoot)->element;
         }
 
 
         bool contains(const Comparable& x) const{
-            return BinaryTree<Comparable>::contains(x, avlRoot);
+            return contains(x, avlRoot);
         }
         bool isEmpty() const{
             return avlRoot == nullptr;
@@ -66,83 +75,91 @@ class AVLTree : protected BinaryTree<Comparable>{
             if(isEmpty()){
                 throw std::out_of_range("Exception: Empty Tree.");
             }
-            return BinaryTree<Comparable>::size(avlRoot);
+            return size(avlRoot);
         }
         int height() const{
             if(isEmpty()){
                 throw std::out_of_range("Exception: Empty Tree.");
             }
-            return BinaryTree<Comparable>::height(avlRoot);
+            return height(avlRoot);
         }
         int depth() const{
             if(isEmpty()){
                 throw std::out_of_range("Exception: Empty Tree.");
             }
-            return BinaryTree<Comparable>::depth(avlRoot);
+            return depth(avlRoot);
         }
 
 
         void printPreorderTree() const{
-            BinaryTree<Comparable>::printPreorderTree(avlRoot);
+            if(isEmpty()){
+                throw std::out_of_range("Exception: Empty Tree.");
+            }
+            return printPreorderTree(avlRoot);
         }
         void printInorderTree() const{
-            BinaryTree<Comparable>::printInorderTree(avlRoot);
+            if(isEmpty()){
+                throw std::out_of_range("Exception: Empty Tree.");
+            }
+            return printInorderTree(avlRoot);
         }
         void printPostorderTree() const{
-            BinaryTree<Comparable>::printPostorderTree(avlRoot);
+            if(isEmpty()){
+                throw std::out_of_range("Exception: Empty Tree.");
+            }
+            return printPostorderTree(avlRoot);
         }
 
 
         void makeEmpty(){
-            BinaryTree<Comparable>::makeEmpty(avlRoot);
+            return makeEmpty(avlRoot);
         }
 
         void insert( const Comparable& x){
-            insert(x, avlRoot);
+            return insert(x, avlRoot);
         }
         void remove( const Comparable& x){
-
+            if(isEmpty()){
+                throw std::out_of_range("Exception: Empty Tree.");
+            }
+            return remove(x, avlRoot);
         }
 
     private:
-        BinaryNode* avlRoot;
+        AVLNode* avlRoot;
 
-        BinaryNode* clone(BinaryNode *t) const{
-            return BinaryTree<Comparable>::clone(avlRoot);
+        AVLNode* clone(AVLNode *t) const{
+            return clone(avlRoot);
         }
 
-        void LeftLeftRotation(BinaryNode* &t){
-            BinaryNode* lt = t->left;
-            t->left = lt->left;
-            lt->right = t; 
+        void LeftLeftRotation(AVLNode* &t){
+            AVLNode* tl = t->left;
+            t->left = tl->right;
+            tl->right = t; 
             t = tl;
         }
-        void RightRightRotation(BinaryNode* &t){
-            BinaryNode* rt = t->right;
-            t->right = rt->left;
-            rt->left = t; 
-            t = rt;
+        void RightRightRotation(AVLNode* &t){
+            AVLNode* tr = t->right;
+            t->right = tr->left;
+            tr->left = t; 
+            t = tr;
         }
-        void LeftRightRotation(BinaryNode* &t){
+        void LeftRightRotation(AVLNode* &t){
             RightRightRotation(t->left);
             LeftLeftRotation(t);
         }
-        void RightLeftRotation(BinaryNode* &t){
+        void RightLeftRotation(AVLNode* &t){
             LeftLeftRotation(t->right);
             RightRightRotation(t);
         }
 
-        //return the height of node t or -1 if null;
-        int NodeHeight(BinaryNode *t){
-            return BinaryTree<Comparable>::height(t);
-        }
 
-        void insert(const Comparable& x, BinaryNode *&t){
+        void insert(const Comparable& x, AVLNode*& t){
             if(t == nullptr){
-                t = new BinaryNode(x, nullptr, nullptr);
+                t = new AVLNode(x, nullptr, nullptr);
             }else if(x < t->element){
                 insert(x, t->left);
-                if(NodeHeight(t->left) - NodeHeight(t->right) == 2){
+                if(height(t->left) - height(t->right) == 2){
                     if( x < t->left->element){
                         LeftLeftRotation(t);
                     }else{
@@ -151,8 +168,8 @@ class AVLTree : protected BinaryTree<Comparable>{
                 }
             }else if(t->element < x){
                 insert(x, t->right);
-                if(NodeHeight(t->right) - NodeHeight(t->left) == 2){
-                    if(t->left->element < x){
+                if(height(t->right) - height(t->left) == 2){
+                    if(t->right->element < x){
                         RightRightRotation(t);
                     }else{
                         RightLeftRotation(t);
@@ -163,6 +180,135 @@ class AVLTree : protected BinaryTree<Comparable>{
             }
         }
 
+        void remove(const Comparable& x, AVLNode* &t){
+            if(x < t->element){
+                remove(x, t->left);
+                if(height(t->right) - height(t->left) == 2){
+                    if(height(t->right->right) > height(t->right->left)){
+                        RightLeftRotation(t);
+                    }else{
+                        RightRightRotation(t);
+                    }
+                }
+            }else if(t->element < x){
+                remove(x, t->right);
+                if(height(t->left) - height(t->right) == 2){
+                    if( height(t->left->right) > height(t->left->left) ){
+                        LeftRightRotation(t);
+                    }else{
+                        LeftLeftRotation(t);
+                    }
+                }
+            }else{
+                if(t->left != nullptr && t->right != nullptr){
+                    if(height(t->left) > height(t->right)){
+                        // if left is higher than right
+                        // find the max node in the left
+                        t->element = findMax(t->left)->element;
+                        remove(t->element, t->left);
+                    }else{
+                        // if left is shorter that right
+                        // find the min node in the right
+                        t->element = findMin(t->right)->element;
+                        remove(t->element, t->right);
+                    }
+                }else{
+                    AVLNode *oldNode = t;
+                    t = (t->left != nullptr) ? t->left : t->right;
+                    delete oldNode;
+                }
+            }
+        }
+
+
+        /*
+            The next part is no different from a binary tree
+        */
+       
+        AVLNode* findMin(AVLNode* t) const{
+            if(t == nullptr){
+                return nullptr;
+            }
+            if(t->left == nullptr){
+                return t;
+            }
+            return findMin(t->left);
+        }
+        AVLNode* findMax(AVLNode* t) const{
+            if(t != nullptr){
+                while(t->right != nullptr){
+                    t = t->right;
+                }
+            }
+            return t;
+        }
+
+        bool contains(const Comparable& x, AVLNode* t) const{
+            if(t == nullptr){
+                return false;
+            }else if(x < t->element){
+                return contains(x, t->left);
+            }else if(t->element < x){
+                return contains(x, t->right);
+            }else{
+                return true;
+            }
+        }
+
+        void makeEmpty(AVLNode* &t) const{
+            if(t != nullptr){
+                makeEmpty(t->left);
+                makeEmpty(t->right);
+                delete t;
+            }
+            t = nullptr; 
+        }
+
+        void printPreorderTree(AVLNode* t) const{
+            if(t != nullptr){
+                std::cout << t->element << " ";
+                printPreorderTree(t->left);
+                printPreorderTree(t->right);
+            }
+        }
+        void printInorderTree(AVLNode* t) const{
+            if(t != nullptr){
+                printInorderTree(t->left);
+                std::cout << t->element << " ";
+                printInorderTree(t->right);
+            }
+        }
+        void printPostorderTree(AVLNode *t) const{
+            if(t != nullptr){
+                printPostorderTree(t->left);
+                printPostorderTree(t->right);
+                std::cout << t->element << " ";
+            }
+        }
+
+        int size(AVLNode *t) const{
+            if(t == nullptr){
+                return 0;
+            }else{
+                return size(t->left) + 1 +size(t->right);
+            }
+        }
+
+        int height(AVLNode *t) const{
+            if(t == nullptr){
+                return 0;
+            }else{
+                return ( height(t->left) > height(t->right) ? height(t->left) : height(t->right) ) + 1;
+            }
+        }
+
+        int depth(AVLNode *t) const{
+            if(t == nullptr){
+                return 0;
+            }else{
+                return ( depth(t->left) > depth(t->right) ? depth(t->left) : depth(t->right) ) + 1;
+            }
+        }
 
 };
 
