@@ -26,25 +26,22 @@ class SplayTree {
             BinaryNode *left;
             BinaryNode *right;
 
-            BinaryNode(const Comparable& theElement, BinaryNode *lt, BinaryNode *rt):
+            BinaryNode(const Comparable& theElement = 0, BinaryNode *lt = nullptr, BinaryNode *rt = nullptr):
                 element(theElement), left(lt), right(rt){
             }
         };
     
     public:
         SplayTree(){
-            nullNode = new BinaryNode;
-            nullNode->left = nullNode->right = nullNode;
-            root = nullNode;
+            root = nullptr;
         }
         SplayTree(const SplayTree& orig){
-            nullNode = nullptr;
             root = nullptr;
             *this = orig;
         }
         virtual ~SplayTree(){
             makeEmpty();
-            delete nullNode;
+            delete root;
         }
 
         //deep copy;
@@ -56,26 +53,29 @@ class SplayTree {
             return *this;
         }
 
-        const Comparable& findMin() const{
+        const Comparable& findMin(){
             if(isEmpty()){
                 throw std::out_of_range("Exception: Empty Tree.");
             }
-            return findMin(root)->element;
+            const Comparable& min = findMin(root)->element;
+            splay(min, root);
+            return root->element;
         }
-        const Comparable& findMax() const{
+        const Comparable& findMax(){
             if(isEmpty()){
                 throw std::out_of_range("Exception: Empty Tree.");
             }
-            return findMax(root)->element;
+            const Comparable& max = findMax(root)->element;
+            splay(max, root);
+            return root->element;
         }
-        bool contains(const Comparable& x) const{
+        bool contains(const Comparable& x){
+            splay(x, root);
             return contains(x, root);
         }
-
         bool isEmpty() const{
             return root == nullptr;
         }
-
         int size() const{
             if(isEmpty()){
                 throw std::out_of_range("Exception: Empty Tree.");
@@ -120,34 +120,37 @@ class SplayTree {
                 remove(root->element);
             }
         }
+
         void insert( const Comparable& x){
             static BinaryNode *newNode = nullptr;
 
             if(newNode == nullptr){
-                newNode = new BinaryNode;
+                newNode = new BinaryNode(x);
             }
-            newNode->element = x;
+            newNode->element = x; 
 
-            if(root == nullNode){
-                newNode->left = newNode->right = nullNode;
+
+            if(root == nullptr){
                 root = newNode;
+                newNode = nullptr;
+                return;
             }else{
                 splay(x, root);
                 if(x < root->element){
-
+                    newNode->left = root->left;
+                    newNode->right = root;
+                    root->left = nullptr;
+                    root = newNode;
+                }else if(root->element < x){
+                    newNode->right = root->right;
+                    newNode->left = root;
+                    root->right = nullptr;
+                    root = newNode;
                 }else{
-                    if(root->element < x){
-                        newNode->right = root->right;
-                        newNode->left = root;
-                        root->right = nullNode;
-                        root = newNode;
-                    }else{
-                        return;
-                    }                    
-                }
+                   return;
+                }  
             }
-            newNode = nullptr;
-
+            newNode = nullptr;  //next insert will call new 
         }
         void remove( const Comparable& x){
             if(isEmpty()){
@@ -164,7 +167,7 @@ class SplayTree {
                 return;
             }
 
-            if(root->left == nullNode){
+            if(root->left == nullptr){
                 newTree = root->right;
             }else{
                 newTree = root->left;
@@ -174,10 +177,15 @@ class SplayTree {
             delete root;
             root = newTree;
         }
+        BinaryNode *search(const Comparable& x){
+            splay(root, x);
+            return root;
+        }
+
+
 
     private:
         BinaryNode *root;
-        BinaryNode *nullNode;
 
         void LeftLeftRotation(BinaryNode* &t){
             BinaryNode* tl = t->left;
@@ -196,33 +204,41 @@ class SplayTree {
          * The last accessed node becomes the new root.
          */
         void splay(const Comparable& x, BinaryNode*& t){
-            BinaryNode *leftTreeMax, *rightTreeMin;
+
             static BinaryNode header;
-
-            header.left = header.right = nullNode;
+            header.left = header.right = nullptr;
+            BinaryNode *leftTreeMax, *rightTreeMin;
             leftTreeMax = rightTreeMin = &header;
-
-            for( ; ; ){
+    
+            while(true){
                 if(x < t->element){
+                    if(t->left == nullptr){
+                        break;
+                    }
                     if(x < t->left->element){
                         LeftLeftRotation(t);
                     }
-                    if(t->left == nullNode){
+                    if(t->left == nullptr){
                         break;
                     }
                     rightTreeMin->left = t;
-                    rightTreeMin = t;
+                    rightTreeMin = rightTreeMin->left;
                     t = t->left;
-                }else if(t->element > x){
+                    rightTreeMin->left = nullptr;
+                }else if(t->element < x){
+                    if(t->right == nullptr){
+                        break;
+                    }
                     if(t->right->element < x){
                         RightRightRotation(t);
                     }
-                    if(t->right == nullNode){
+                    if(t->right == nullptr){
                         break;
                     }
                     leftTreeMax->right = t;
-                    leftTreeMax = t;
+                    leftTreeMax = leftTreeMax->right;
                     t = t->right;
+                    leftTreeMax->right = nullptr;
                 }else{
                     break;
                 }
@@ -233,11 +249,8 @@ class SplayTree {
             t->left = header.right;
             t->right = header.left;
         }        
-        /*
-            The next part is no different from a binary tree
-        */
 
-        BinaryNode* findMin(BinaryNode* t) const{
+        BinaryNode* findMin(BinaryNode* t){
             if(t == nullptr){
                 return nullptr;
             }
@@ -246,7 +259,7 @@ class SplayTree {
             }
             return findMin(t->left);
         }
-        BinaryNode* findMax(BinaryNode* t) const{
+        BinaryNode* findMax(BinaryNode* t){
             if(t != nullptr){
                 while(t->right != nullptr){
                     t = t->right;
@@ -255,7 +268,7 @@ class SplayTree {
             return t;
         }
 
-        bool contains(const Comparable& x, BinaryNode* t) const{
+        bool contains(const Comparable& x, BinaryNode* t){
             if(t == nullptr){
                 return false;
             }else if(x < t->element){
@@ -267,6 +280,10 @@ class SplayTree {
             }
         }
 
+
+        /*
+            The next part is no different from a binary tree
+        */
         void printPreorderTree(BinaryNode *t) const{
             if(t != nullptr){
                 std::cout << t->element << " ";
@@ -288,7 +305,6 @@ class SplayTree {
                 std::cout << t->element << " ";
             }
         }
-
         int size(BinaryNode *t) const{
             if(t == nullptr){
                 return 0;
@@ -296,7 +312,6 @@ class SplayTree {
                 return size(t->left) + 1 +size(t->right);
             }
         }
-
         int height(BinaryNode *t) const{
             if(t == nullptr){
                 return 0;
@@ -304,7 +319,6 @@ class SplayTree {
                 return ( height(t->left) > height(t->right) ? height(t->left) : height(t->right) ) + 1;
             }
         }
-
         int depth(BinaryNode *t) const{
             if(t == nullptr){
                 return 0;
@@ -312,7 +326,6 @@ class SplayTree {
                 return ( depth(t->left) > depth(t->right) ? depth(t->left) : depth(t->right) ) + 1;
             }
         }
-
         BinaryNode* clone(BinaryNode *t) const{
             if(t == nullptr){
                 return nullptr;
