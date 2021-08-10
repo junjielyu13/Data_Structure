@@ -108,7 +108,15 @@ class RedBlackTree {
         void insert(const Comparable& x){
             return insert(root, x);
         }
-        void remove(const Comparable& x);
+        void remove(const Comparable& x){
+            if(isEmpty()){
+                throw std::out_of_range("Exception: Empty Tree.");
+            }
+            if(!contains()){
+                throw std::invalid_argument("Exception: can't find value.");
+            }
+            return remove(root, x);
+        }
 
     private:
         RedBlackNode *root;
@@ -147,7 +155,71 @@ class RedBlackTree {
             return new RedBlackNode(t->element, clone(t->left), clone(t->right));
         }
 
+                void LeftRotation(RedBlackNode* &t){
+            if(t->parent == nullptr){
+                root = t;
+                return;
+            }
+            RedBlackNode *grandparent = t->grandparent(); 
+            RedBlackNode *father = t->parent;  
+            RedBlackNode *sibling = t->left;
 
+            father->right = sibling;
+            if(sibling != leaf){
+                sibling->parent = father;
+            }
+            t->left = father;
+            father->parent = t;
+
+            if(root == father){
+                root = t;
+            } 
+            t->parent = grandparent;
+
+            if(grandparent != nullptr){
+                if(grandparent->left == father){
+                    grandparent->left = t;
+                }else{
+                    grandparent->right = t;
+                }
+            }
+        }
+
+        void RightRotation(RedBlackNode* &t){
+            if(t->parent == nullptr){
+                root = t;
+                return;
+            }
+
+            RedBlackNode *grandparent = t->grandparent(); 
+            RedBlackNode *father = t->parent;  
+            RedBlackNode *sibling = t->right;
+
+            father->left = sibling;
+            if(sibling != leaf){
+                sibling->parent = father; 
+            }
+            t->right = father;
+            father->parent = t;
+
+            if(root == father){
+                root = t;
+            }
+            t->parent = grandparent;
+
+            if(grandparent != nullptr){
+                if(grandparent->left == father){
+                    grandparent->left = t;
+                }else{
+                    grandparent->right = t;
+                }
+            }
+        }
+        
+
+        /**
+         * Insert:
+        */
         void insert(RedBlackNode* t, Comparable x){
             if(root == nullptr){
                 root = new RedBlackNode();
@@ -219,71 +291,116 @@ class RedBlackTree {
             }
         }
 
+        
 
+        /**
+         *  Remove: 
+         */
+        void remove(RedBlackNode* t, Comparable x){
+            if(x < t->element){
+                return remove(t->left, x);
+            }else if(t->element < x){
+                return remove(t->right, x);
+            }else{
+                if(p->right == leaf){
+                    removechild(t);
+                    return;
+                }
+                RedBlackNode *min = findMin(p->right);
+                swap(t->element, min->element);
+                removechild(min);
+                return;
+            }
+            return;
+        }
 
-        void LeftRotation(RedBlackNode* &t){
-            if(t->parent == nullptr){
+        void swap(Comparable &a, Comparable &b){
+            Comparable temp = a;
+            a = b;
+            b = temp;
+        }
+
+        void removechild(RedBlackNode* t){
+            RedBlackNode* child = t->left == leaf ? t->right : t->left;
+            if(t->parent == nullptr && t->left == leaf && t->right == leaf){
+                t = nullptr;
                 root = t;
                 return;
             }
-            RedBlackNode *grandparent = t->grandparent(); 
-            RedBlackNode *father = t->parent;  
-            RedBlackNode *sibling = t->left;
 
-            father->right = sibling;
-            if(sibling != leaf){
-                sibling->parent = father;
-            }
-            t->left = father;
-            father->parent = t;
-
-            if(root == father){
-                root = t;
-            } 
-            t->parent = grandparent;
-
-            if(grandparent != nullptr){
-                if(grandparent->left == father){
-                    grandparent->left = t;
-                }else{
-                    grandparent->right = t;
-                }
-            }
-
-
-        }
-        void RightRotation(RedBlackNode* &t){
             if(t->parent == nullptr){
-                root = t;
+                delete t;
+                child->parent = nullptr;
+                root = child;
+                root->color = BLACK;
                 return;
             }
 
-            RedBlackNode *grandparent = t->grandparent(); 
-            RedBlackNode *father = t->parent;  
-            RedBlackNode *sibling = t->right;
-
-            father->left = sibling;
-            if(sibling != leaf){
-                sibling->parent = father; 
+            if(t->parent->left == t){
+                t->parent->left = child;
+            }else{
+                t->parent->right = child;
             }
-            t->right = father;
-            father->parent = t;
+            child->parent = t->parent;
 
-            if(root == father){
-                root = t;
-            }
-            t->parent = grandparent;
-
-            if(grandparent != nullptr){
-                if(grandparent->left == father){
-                    grandparent->left = t;
+            if(p->color == BLACK){
+                if(child->color == RED){
+                    child->color = BLACK;
                 }else{
-                    grandparent->right = t;
+                    remove_case(child);
+                }
+            }
+            delete t;
+        }
+
+        void remove_case(RedBlackNode* t){
+            if(t->parent == nullptr){
+                t->color = BLACK;
+                return;
+            }
+
+            if(t->sibling()->color == RED){
+                t->parent->color = RED;
+                t->sibling()->color = BLACK;
+                if(t == t->parent->left){
+                    LeftRotation(t->parent);
+                }else{
+                    RightRotation(t->parent);
                 }
             }
 
-        }
+            if(t->parent->color == BLACK && t->sibling()->color == BLACK && t->sibling()->left->color == BLACK && t->sibling()->right->color == BLACK){
+                t->sibling()->color = RED;
+                remove_case(t->parent);
+            }else if(t->parent->color == RED && t->sibling()->color == BLACK && t->sibling()->left->color == BLACK && t->sibling()->right->color == BLACK){
+                t->sibling()->color = RED;
+                t->parent->color = BLACK;
+            }else{
+                if(t->sibling()->color == BLACK){
+                    if(t == t->parent->left && t->sibling()->left->color == RED && t->sibling()->right->color == BLACK){
+                        t->sibling()->color = RED;
+                        t->sibling()->left->color = BLACK;
+                        RightRotation(t->sibling()->left);
+                    }else if(t == t->parent->right && t->sibling()->left->color == BLACK && t->sibling()->right->color == RED){
+                        t->sibling()->color = RED;
+                        t->sibling()->right->color = BLACK;
+                        RightRotation(t->sibling()->right);                        
+                    }
+                }
 
+                t->sibling()->color = t->parent->color;
+                t->parent->color = BLACK;
+                if(t == t->parent->left){
+                    t->sibling()->right->color = BLACK;
+                    LeftRotation(t->sibling());
+                }else{
+                    t->sibling()->left->color = BLACK;
+                    RightRotation(t->sibling());
+                }
+
+            }
+
+        }
 
 };
 
