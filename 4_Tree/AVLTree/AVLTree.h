@@ -129,7 +129,10 @@ class AVLTree{
         AVLNode* avlRoot;
 
         AVLNode* clone(AVLNode *t) const{
-            return clone(avlRoot);
+            if(t == nullptr){
+                return nullptr;
+            }
+            return new AVLNode(t->element, clone(t->left), clone(t->right));
         }
 
         void LeftLeftRotation(AVLNode* &t){

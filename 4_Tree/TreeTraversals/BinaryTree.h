@@ -43,10 +43,39 @@ class BinaryTree {
             return root == nullptr;
         }
 
+        //insert do not use recursion
+        void insert(const Comparable& x){
+            if(root == nullptr){
+                root = new BinaryNode(x, nullptr, nullptr);
+                return;
+            }
+            BinaryNode *temp = root;
+            while(temp != nullptr){
+                if(x < temp->element){
+                    if(temp->left == nullptr){
+                        temp->left = new BinaryNode(x, nullptr, nullptr);
+                        return;
+                    }else{
+                        temp = temp->left;
+                    }
+                }else if(temp->element < x){
+                    if(temp->right == nullptr){
+                        temp->right = new BinaryNode(x, nullptr, nullptr);
+                        return;
+                    }else{
+                        temp = temp->right;
+                    }
+                }else{
+                    return;  //same value, should be exception
+                }
+            }
+        }
+
+
+
         /**
          * Depth-Frist Traversals:
         */  
-
 
         //Use recursion
         void printPreorderTreeRecursion() const{
@@ -158,36 +187,8 @@ class BinaryTree {
 
         }
 
-
-
-
-        void insert( const Comparable& x){
-            return insert(x, root);
-        }
-        void remove( const Comparable& x){
-            if(isEmpty()){
-                throw std::out_of_range("Exception: Empty Tree.");
-            }
-            return remove(x, root);
-        }
-
-
     private:
         BinaryNode *root;
-
-        void insert(const Comparable& x, BinaryNode* &t) const{
-            if(t == nullptr){
-                t = new BinaryNode(x, nullptr, nullptr);
-            }else if(x < t->element){
-                insert(x, t->left);
-            }else if(t->element < x){
-                insert(x, t->right);
-            }else{
-                throw std::invalid_argument("Exception: Duplicate valor.") ;
-            }
-        }
-
-
 
         void printPreorderTreeRecursion(BinaryNode *t) const{
             if(t != nullptr){
