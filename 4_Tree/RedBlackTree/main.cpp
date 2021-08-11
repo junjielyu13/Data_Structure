@@ -27,6 +27,27 @@ int main(int argc, char** argv) {
     std::cout << "\nInorder: ";
     test1.printInorderTree();
     std::cout << "\n --------------------------------------------------------\n";
+
+    RedBlackTree<int> test2;
+    test2.insert(2); test2.insert(10); test2.insert(6); test2.insert(7);
+    test2.insert(8); test2.insert(9); test2.insert(5); test2.insert(1);
+    test2.insert(3); test2.insert(4);
+
+    std::cout << "Preorder: ";
+    test2.printPreorderTree();
+    std::cout << "\nInorder: ";
+    test2.printInorderTree();
+    std::cout << "\n --------------------------------------------------------\n";
+
+    test2.remove(10);
+    std::cout << "remove 6: \n";
+    std::cout << "Preorder: ";
+    test2.printPreorderTree();
+    std::cout << "\nInorder: ";
+    test2.printInorderTree();
+    std::cout << "\n --------------------------------------------------------\n";
+
+
     std::cout << "finish";
     return 0;
 }

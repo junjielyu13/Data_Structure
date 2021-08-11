@@ -81,9 +81,21 @@ class RedBlackTree {
             return *this;
         }
 
-        const Comparable& findMin() const;
-        const Comparable& findMax() const;
-        bool contains(const Comparable& x) const;
+        const Comparable& findMin() const{
+            if(isEmpty()){
+                throw std::out_of_range("Exception: Empty Tree.");
+            }
+            return findMin(root)->element;
+        }
+        const Comparable& findMax() const{
+            if(isEmpty()){
+                throw std::out_of_range("Exception: Empty Tree.");
+            }
+            return findMax(root)->element;
+        }
+        bool contains(const Comparable& x) const{
+            return contains(x, root);
+        }
 
         bool isEmpty() const{
             return root == nullptr;
@@ -112,7 +124,7 @@ class RedBlackTree {
             if(isEmpty()){
                 throw std::out_of_range("Exception: Empty Tree.");
             }
-            if(!contains()){
+            if(!contains(x)){
                 throw std::invalid_argument("Exception: can't find value.");
             }
             return remove(root, x);
@@ -123,6 +135,35 @@ class RedBlackTree {
         RedBlackNode *leaf;
 
         enum { RED = 0, BLACK = 1 };
+
+        RedBlackNode* findMin(RedBlackNode* t) const{
+            if(t != leaf){
+                while(t->left != leaf){
+                    t = t->left;
+                }
+            }
+            return t;
+        }
+        RedBlackNode* findMax(RedBlackNode* t) const{
+            if(t != leaf){
+                while(t->right != leaf){
+                    t = t->right;
+                }
+            }
+            return t;
+        }
+        bool contains(const Comparable& x, RedBlackNode* t) const{
+            if(t == nullptr){
+                return false;
+            }else if(x < t->element){
+                return contains(x, t->left);
+            }else if(t->element < x){
+                return contains(x, t->right);
+            }else{
+                return true;
+            }
+        }
+        
 
         void reclaimMemory(RedBlackNode *t){
             if(t != nullptr){
@@ -147,7 +188,6 @@ class RedBlackTree {
             }
         }
 
-        
         RedBlackNode* clone(RedBlackNode *t) const{
             if(t == nullptr){
                 return nullptr;
@@ -155,7 +195,8 @@ class RedBlackTree {
             return new RedBlackNode(t->element, clone(t->left), clone(t->right));
         }
 
-                void LeftRotation(RedBlackNode* &t){
+        
+        void LeftRotation(RedBlackNode* t){
             if(t->parent == nullptr){
                 root = t;
                 return;
@@ -184,8 +225,7 @@ class RedBlackTree {
                 }
             }
         }
-
-        void RightRotation(RedBlackNode* &t){
+        void RightRotation(RedBlackNode* t){
             if(t->parent == nullptr){
                 root = t;
                 return;
@@ -291,7 +331,7 @@ class RedBlackTree {
             }
         }
 
-        
+
 
         /**
          *  Remove: 
@@ -302,11 +342,11 @@ class RedBlackTree {
             }else if(t->element < x){
                 return remove(t->right, x);
             }else{
-                if(p->right == leaf){
+                if(t->right == leaf){
                     removechild(t);
                     return;
                 }
-                RedBlackNode *min = findMin(p->right);
+                RedBlackNode *min = findMin(t->right);
                 swap(t->element, min->element);
                 removechild(min);
                 return;
@@ -343,7 +383,7 @@ class RedBlackTree {
             }
             child->parent = t->parent;
 
-            if(p->color == BLACK){
+            if(t->color == BLACK){
                 if(child->color == RED){
                     child->color = BLACK;
                 }else{
