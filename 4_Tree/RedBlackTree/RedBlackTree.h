@@ -28,7 +28,8 @@ class RedBlackTree {
             RedBlackNode  *parent;
             int           color;
 
-            RedBlackNode(): element(0), left(nullptr), right(nullptr), parent(nullptr), color(RED){
+            RedBlackNode(const Comparable& theElement = 0, RedBlackNode *lt = nullptr, RedBlackNode *rt = nullptr, RedBlackNode *pr = nullptr, int cl = RED ): 
+                element(theElement), left(lt), right(rt), parent(pr), color(cl){
             }
 
             RedBlackNode* grandparent(){
@@ -117,8 +118,38 @@ class RedBlackTree {
         void makeEmpty(){
             return reclaimMemory(root);
         }
+
+        
+        /**
+         * Insert:
+        */
         void insert(const Comparable& x){
-            return insert(root, x);
+            if(root == nullptr){
+                root = new RedBlackNode(x,leaf,leaf,nullptr,BLACK);
+            }else{
+                RedBlackNode *temp = root;
+                while (temp != leaf){
+                    if(x < temp->element){
+                        if(temp->left == leaf){
+                            temp->left = new RedBlackNode(x, leaf, leaf, temp);
+                            insert_case(temp->left);
+                            return;
+                        }else{
+                            temp = temp->left;
+                        }
+                    }else if(temp->element < x){
+                        if(temp->right == leaf){
+                            temp->right = new RedBlackNode(x, leaf, leaf, temp);
+                            insert_case(temp->right);
+                            return;
+                        }else{
+                            temp = temp->right;
+                        }
+                    }else{
+                        return;  //same value, should be exception
+                    }
+                }
+            }
         }
         void remove(const Comparable& x){
             if(isEmpty()){
@@ -174,14 +205,14 @@ class RedBlackTree {
             t = nullptr; 
         }
         void printPreorderTree(RedBlackNode *t) const{
-            if(t != nullptr && t != leaf){
+            if(t != leaf){
                 std::cout << t->element << " ";
                 printPreorderTree(t->left);
                 printPreorderTree(t->right);
             }
         }
         void printInorderTree(RedBlackNode *t) const{
-            if(t != nullptr && t != leaf){
+            if(t != leaf){
                 printInorderTree(t->left);
                 std::cout << t->element << " ";
                 printInorderTree(t->right);
@@ -203,11 +234,11 @@ class RedBlackTree {
             }
             RedBlackNode *grandparent = t->grandparent(); 
             RedBlackNode *father = t->parent;  
-            RedBlackNode *sibling = t->left;
+            RedBlackNode *lt = t->left;
 
-            father->right = sibling;
-            if(sibling != leaf){
-                sibling->parent = father;
+            father->right = lt;
+            if(lt != leaf){
+                lt->parent = father;
             }
             t->left = father;
             father->parent = t;
@@ -233,11 +264,11 @@ class RedBlackTree {
 
             RedBlackNode *grandparent = t->grandparent(); 
             RedBlackNode *father = t->parent;  
-            RedBlackNode *sibling = t->right;
+            RedBlackNode *rt = t->right;
 
-            father->left = sibling;
-            if(sibling != leaf){
-                sibling->parent = father; 
+            father->left = rt;
+            if(rt != leaf){
+                rt->parent = father; 
             }
             t->right = father;
             father->parent = t;
@@ -256,45 +287,6 @@ class RedBlackTree {
             }
         }
         
-
-        /**
-         * Insert:
-        */
-        void insert(RedBlackNode* t, Comparable x){
-            if(root == nullptr){
-                root = new RedBlackNode();
-                root->color = BLACK;
-                root->left = root->right = leaf;
-                root->element = x;
-            }else{
-                if(x < t->element){
-                    if(t->left != leaf){
-                        insert(t->left, x);
-                    }else{
-                        RedBlackNode *temp = new RedBlackNode();
-                        temp->element = x;
-                        temp->left = temp->right = leaf;
-                        temp->parent = t;
-                        t->left = temp;
-                        insert_case(temp);
-                    }
-                }else if(t->element < x){
-                    if(t->right != leaf){
-                        insert(t->right, x);
-                    }else{
-                        RedBlackNode *temp = new RedBlackNode();
-                        temp->element = x;
-                        temp->left = temp->right = leaf;
-                        temp->parent = t;
-                        t->right = temp;
-                        insert_case(temp);
-                    }
-                }else{
-                    return;
-                }
-            }
-        }
-
         void insert_case(RedBlackNode* t){
             if(t->parent == nullptr){
                 root = t;
@@ -347,17 +339,13 @@ class RedBlackTree {
                     return;
                 }
                 RedBlackNode *min = findMin(t->right);
-                swap(t->element, min->element);
-                removechild(min);
-                return;
-            }
-            return;
-        }
 
-        void swap(Comparable &a, Comparable &b){
-            Comparable temp = a;
-            a = b;
-            b = temp;
+                Comparable temp = t->element;
+                t->element = min->element;
+                min->element = temp;
+
+                removechild(min);
+            }
         }
 
         void removechild(RedBlackNode* t){

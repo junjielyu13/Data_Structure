@@ -28,7 +28,8 @@
    - 6.1: Binary Heap  
    - 6.2: d-Heaps  
    - 6.3: Leftist Heaps  
-   - 6.4: Skew Heaps  
+   - 6.4: Skew Heaps 
+   - 6.5: Treaps 
 - 7- Graph  
 ----------------------------------------------
 
