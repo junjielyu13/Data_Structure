@@ -16,17 +16,17 @@
    - 4.1: Binary Tree 
    - 4.2: AVL Tree  
    - 4.3: Splay Tree
-   - 4.4: Red-Black Tree  
-   - 4.5: Tree Traversals 
-   - 4.6: B Tree
-      - 4.6.1: B-Tree
-      - 4.6.2: B+Tree
-      - 4.6.3: B*Tree
-      - 4.6.4: 2-3 Tree
-      - 4.6.5: 2-3-4 Tree
-   - 4.7: Set
-   - 4.8: Map
-   - 4.9: AA-Tree  
+   - 4.4: Red-Black Tree
+   - 4.5: AA-Tree     
+   - 4.6: Tree Traversals 
+   - 4.7: B Tree
+      - 4.7.1: B-Tree
+      - 4.7.2: B+Tree
+      - 4.7.3: B*Tree
+      - 4.7.4: 2-3 Tree
+      - 4.7.5: 2-3-4 Tree
+   - 4.8: Set
+   - 4.9: Map
    - 4.10: k-d Tree 
 - 5- Hashing  
 - 6- Heaps  
