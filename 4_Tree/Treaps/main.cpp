@@ -12,13 +12,45 @@
  */
 
 #include <cstdlib>
+#include <iostream>
+#include "Treap.h"
 
-using namespace std;
 
-/*
- * 
- */
 int main(int argc, char** argv) {
+
+    Treap<int> test1;
+
+    for(int i=0; i<20; i++){
+        int numrandinsert  = rand();
+        std::cout << "numrandinsert = " << numrandinsert; 
+        test1.insert(numrandinsert);
+    }
+
+
+    std::cout << "\nPreoreder: "; 
+    test1.printPreorderTree();
+    std::cout << "\nInoreder: "; 
+    test1.printInorderTree();
+
+    std::cout <<"\n------------------------------------------------------\n";
+
+    test1.remove(17035);
+    std::cout << "remove 17035: ";
+    std::cout << "\nPreoreder: "; 
+    test1.printPreorderTree();
+    std::cout << "\nInoreder: "; 
+    test1.printInorderTree();
+
+    std::cout <<"\n------------------------------------------------------\n";
+
+    test1.remove(3902);
+    std::cout << "remove 3902: ";
+    std::cout << "\nPreoreder: "; 
+    test1.printPreorderTree();
+    std::cout << "\nInoreder: "; 
+    test1.printInorderTree();
+
+
 
     return 0;
 }
