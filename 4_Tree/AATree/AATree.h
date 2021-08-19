@@ -39,7 +39,7 @@ class AATree {
             nullnode = new AANode;
             nullnode->left = nullnode->right = nullnode;
             nullnode->level = 0;
-            root = nullnode;
+            root = nullnode; 
         }
 
         int height() const{
@@ -182,9 +182,6 @@ class AATree {
             tr->left = t; 
             t = tr;
         }
-
-
-
 
 
 

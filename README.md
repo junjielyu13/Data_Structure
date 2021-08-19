@@ -17,24 +17,24 @@
    - 4.2: AVL Tree  
    - 4.3: Splay Tree
    - 4.4: Red-Black Tree
-   - 4.5: AA-Tree     
-   - 4.6: Tree Traversals 
-   - 4.7: B Tree
-      - 4.7.1: B-Tree
-      - 4.7.2: B+Tree
-      - 4.7.3: B*Tree
-      - 4.7.4: 2-3 Tree
-      - 4.7.5: 2-3-4 Tree
-   - 4.8: Set
-   - 4.9: Map
-   - 4.10: k-d Tree 
+   - 4.5: AA-Tree
+   - 4.6: ScapeGoat tree 
+   - 6.7: Treaps    
+   - 4.8: Tree Traversals 
+   - 4.9: B Tree
+      - 4.9.1: B-Tree
+      - 4.9.2: B+Tree
+      - 4.9.3: B*Tree
+      - 4.9.4: 2-3 Tree
+      - 4.9.5: 2-3-4 Tree
+   - 4.10: Set
+   - 4.11: Map
 - 5- Hashing  
 - 6- Heaps  
    - 6.1: Binary Heap  
    - 6.2: d-Heaps  
    - 6.3: Leftist Heaps  
-   - 6.4: Skew Heaps 
-   - 6.5: Treaps 
+   - 6.4: Skew Heaps  
 - 7- Graph  
 ----------------------------------------------
 

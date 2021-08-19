@@ -41,10 +41,21 @@ int main(int argc, char** argv) {
 
     std::cout <<"\n------------------------------------------------------\n";
     test1.remove(40);
+    std::cout << "\nremove 40:\n";
     std::cout << "Preoreder: "; 
     test1.printPreorderTree();
     std::cout << "\nInoreder: "; 
     test1.printInorderTree();
+
+    test1.remove(50);
+    std::cout << "\nremove 50:\n";
+    std::cout << "Preoreder: "; 
+    test1.printPreorderTree();
+    std::cout << "\nInoreder: "; 
+    test1.printInorderTree();
+
+
+    
 
 
 
