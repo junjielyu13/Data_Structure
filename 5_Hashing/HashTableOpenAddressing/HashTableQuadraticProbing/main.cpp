@@ -19,13 +19,25 @@ using namespace std;
 
 int main(int argc, char** argv) {
 
-    HashTableQuadraticProbing<int>test1;
+    HashTableQuadraticProbing<int>test1(17);
     for(int i=0; i<20; i++){
         int numrandinsert  = rand();
         std::cout << "numrandinsert = " << numrandinsert << endl;
         test1.insert(numrandinsert);
     }
     test1.printArray();
+    cout << "\n----------------------------------------------------------------------\n";
+
+
+    HashTableQuadraticProbing<int>test2(test1);
+    test1.remove(41);
+    test1.remove(24464);
+    test1.printArray();
+    
+    cout << "\n----------------------------------------------------------------------\n";
+
+    test2.printArray();
+    cout << "\n finish \n";
 
 
     return 0;

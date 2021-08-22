@@ -27,8 +27,17 @@ class HashTableQuadraticProbing {
         explicit HashTableQuadraticProbing(int size = 101): array(nextPrime(size)){
             makeEmpty();
         }
-        HashTableQuadraticProbing(const HashTableQuadraticProbing& orig);
-        virtual ~HashTableQuadraticProbing();
+        HashTableQuadraticProbing(const HashTableQuadraticProbing& orig){
+            makeEmpty();
+            int origarraysize = orig.array.size();
+            array.resize(origarraysize);
+            for(int i=0; i<origarraysize; i++){
+                array[i] = orig.array[i];
+            }
+        }
+        virtual ~HashTableQuadraticProbing(){
+            makeEmpty();
+        }
 
         bool contains(const HashedObj& x)const{
             return isActive(findPos(x));
@@ -36,7 +45,8 @@ class HashTableQuadraticProbing {
 
         void makeEmpty(){
             currentSize = 0;
-            for(int i=0; i<array.size(); i++){
+            int arraysize = array.size();
+            for(int i=0; i<arraysize; i++){
                 array[i].info = EMPTY;
             }
         }
@@ -46,7 +56,8 @@ class HashTableQuadraticProbing {
             if(!isActive(currentPos)){
                 array[currentPos] = HashEntry(x, ACTIVE);
 
-                if(++currentSize > array.size()/2){
+                int arraysize = array.size();
+                if(++currentSize > arraysize/2){
                     rehash();
                 }
             }
@@ -60,11 +71,12 @@ class HashTableQuadraticProbing {
         }
 
         void printArray(){
-            for(int i=0; i<array.size(); i++){
+            int arraysize = array.size();
+            for(int i=0; i<arraysize; i++){
                 if(array[i].info == ACTIVE){
                     cout << array[i].element << " ";
                 }else if(array[i].info == DELETED){
-                    cout << array[i].element << " D ";
+                    cout << array[i].element << "D ";
                 }else if(array[i].info == EMPTY){
                     cout << " E ";
                 }
@@ -98,8 +110,9 @@ class HashTableQuadraticProbing {
             while(array[currentPos].info != EMPTY && array[currentPos].element != x){
                 currentPos += offset;
                 offset += 2;
-                if(currentPos >= array.size()){
-                    currentPos -= array.size();
+                int arraysize = array.size();
+                if(currentPos >= arraysize){
+                    currentPos -= arraysize;
                 }
             }
             return currentPos;
@@ -111,14 +124,16 @@ class HashTableQuadraticProbing {
             vector<HashEntry> oldArray = array;
 
             //create new double-sized, empty table
-            array.resize(nextPrime(2 * oldArray.size()));
-            for(int i=0; i<array.size(); i++){
+            int oldarraysize = oldArray.size();
+            array.resize(nextPrime(2 * oldarraysize));
+            int arraysize = array.size();
+            for(int i=0; i<arraysize; i++){
                 array[i].info = EMPTY;
             }
 
             //copy table over
             currentSize = 0;
-            for(int i=0; i<oldArray.size(); i++){
+            for(int i=0; i<oldarraysize; i++){
                 if(oldArray[i].info == ACTIVE){
                     insert(oldArray[i].element);
                 }
@@ -127,9 +142,9 @@ class HashTableQuadraticProbing {
         int myhash(const HashedObj& x)const{
             int hashVal = hash(x);  
 
-            hashVal %= theLists.size();
+            hashVal %= array.size();
             if(hashVal < 0){
-                hashVal += theLists.size();
+                hashVal += array.size();
             }
             return hashVal;
         }
@@ -139,9 +154,9 @@ class HashTableQuadraticProbing {
         */
         int hash(const int& key) const{
             int hashVal = key;
-            hashVal %= theLists.size();
+            hashVal %= array.size();
             if(hashVal < 0){
-                hashVal += theLists.size();
+                hashVal += array.size();
             }
             return hashVal;
         }
@@ -156,9 +171,9 @@ class HashTableQuadraticProbing {
                 hashVal = 37 * hashVal + key[i];
             }
 
-            hashVal %= theLists.size();
+            hashVal %= array.size();
             if(hashVal < 0){
-                hashVal += theLists.size();
+                hashVal += array.size();
             }
             return hashVal;
 
