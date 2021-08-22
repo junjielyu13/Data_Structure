@@ -29,7 +29,12 @@
       - 4.9.5: 2-3-4 Tree
    - 4.10: Set
    - 4.11: Map
-- 5- Hashing  
+- 5- Hash
+   - 5.1: Hash Table Separate Chaining
+   - 5.2: Hash Table Open Addressing
+      - 5.2.1: Linear probing
+      - 5.2.2: Quadratic probing
+      - 5.2.3: Double hashing
 - 6- Heaps  
    - 6.1: Binary Heap  
    - 6.2: d-Heaps  
