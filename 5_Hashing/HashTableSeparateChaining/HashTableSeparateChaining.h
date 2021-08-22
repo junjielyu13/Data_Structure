@@ -145,8 +145,9 @@ class HashTableSeparateChaining {
 
         }
 
-
-
+        /**
+         * genera number prime
+        */
         int nextPrime(int size){
             int temp = size;
             if(isPrime(size)){
