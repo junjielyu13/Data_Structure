@@ -33,11 +33,18 @@ int main(int argc, char** argv) {
     test1.remove(41);
     test1.remove(24464);
     test1.printArray();
-    
+
     cout << "\n----------------------------------------------------------------------\n";
 
     test2.printArray();
     cout << "\n finish \n";
+    
+    // HashTableQuadraticProbing<int> test1(16);
+    // int numlist[] = {5,8,10,8,5,11,6,7,3};
+    // for(int i=0; i<9; i++){
+    //     test1.insert(numlist[i]);
+    // }
+    // test1.printArray();
 
 
     return 0;

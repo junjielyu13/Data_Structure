@@ -12,13 +12,19 @@
  */
 
 #include <cstdlib>
-
+#include <iostream>
+#include "HashTableLinearProbing.h"
 using namespace std;
 
-/*
- * 
- */
 int main(int argc, char** argv) {
+
+    HashTableLinearProbing<int> test1(12);
+    int numlist[] = {18, 41, 22, 44, 59, 32, 31, 73};
+
+    for(int i=0; i<8; i++){
+        test1.insert(numlist[i]);
+    }
+    test1.printArray();
 
     return 0;
 }

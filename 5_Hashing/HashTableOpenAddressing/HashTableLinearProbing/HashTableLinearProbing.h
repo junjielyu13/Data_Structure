@@ -5,11 +5,12 @@
  */
 
 /* 
- * File:   HashTableQuadraticProbing.h
+ * File:   HashTableLinearProbing.h
  * Author: Junjie_Li
  *
- * Created on August 22, 2021, 6:03 PM
+ * Created on August 22, 2021, 11:19 PM
  */
+
 #include <iostream>
 #include <string>
 #include <vector>
@@ -17,17 +18,16 @@
 #include <math.h>
 using namespace std;
 
-#ifndef HASHTABLEQUADRATICPROBING_H
-#define HASHTABLEQUADRATICPROBING_H
+#ifndef HASHTABLELINEARPROBING_H
+#define HASHTABLELINEARPROBING_H
 
 template <typename HashedObj>
-class HashTableQuadraticProbing {
-
+class HashTableLinearProbing {
     public:
-        explicit HashTableQuadraticProbing(int size = 101): array(nextPrime(size)){
+        explicit HashTableLinearProbing(int size = 101): array(nextPrime(size)){
             makeEmpty();
         }
-        HashTableQuadraticProbing(const HashTableQuadraticProbing& orig){
+        HashTableLinearProbing(const HashTableLinearProbing& orig){
             makeEmpty();
             int origarraysize = orig.array.size();
             array.resize(origarraysize);
@@ -35,7 +35,7 @@ class HashTableQuadraticProbing {
                 array[i] = orig.array[i];
             }
         }
-        virtual ~HashTableQuadraticProbing(){
+        virtual ~HashTableLinearProbing(){
             makeEmpty();
         }
 
@@ -104,16 +104,13 @@ class HashTableQuadraticProbing {
             return array[currentPos].info == ACTIVE;
         }
         int findPos(const HashedObj& x)const{
-            int offset = 1;
             int currentPos = myhash(x);
-
             /**
-             *  quadratic probing:
-             *  h(i) = h(i-1) + 2i - 1;
+             *  Linear Probing:
+             *  h(i) = h(i) + 1;
             */
             while(array[currentPos].info != EMPTY && array[currentPos].element != x ){     
-                currentPos += offset;
-                offset += 2;
+                currentPos++;
                 int arraysize = array.size();
                 if(currentPos >= arraysize){
                     currentPos -= arraysize;
@@ -206,9 +203,7 @@ class HashTableQuadraticProbing {
             return true;
         }
 
-
-
 };
 
-#endif /* HASHTABLEQUADRATICPROBING_H */
+#endif /* HASHTABLELINEARPROBING_H */
 
