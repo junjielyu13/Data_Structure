@@ -5,38 +5,46 @@
  */
 
 /* 
- * File:   HashTableDoubleHashing.h
+ * File:   PerfectHashTable.h
  * Author: Junjie_Li
  *
- * Created on August 22, 2021, 11:40 PM
+ * Created on August 23, 2021, 1:08 AM
  */
-
 #include <iostream>
 #include <string>
 #include <vector>
 #include <list>
 #include <math.h>
+
 using namespace std;
 
-#ifndef HASHTABLEDOUBLEHASHING_H
-#define HASHTABLEDOUBLEHASHING_H
+#ifndef PERFECTHASHTABLE_H
+#define PERFECTHASHTABLE_H
 
 template <typename HashedObj>
-class HashTableDoubleHashing {
+class PerfectHashTable {
 
     public:
-        explicit HashTableDoubleHashing(int size = 101): array(nextPrime(size)){
+        explicit PerfectHashTable(int size = 101): array(nextPrime(size)){
             makeEmpty();
+            int arraysize = array.size();
+            for(int i=0; i<arraysize; i++){
+                array[i].resize(pow(i+1,2));
+            }
         }
-        HashTableDoubleHashing(const HashTableDoubleHashing& orig){
+        PerfectHashTable(const PerfectHashTable& orig){
             makeEmpty();
             int origarraysize = orig.array.size();
             array.resize(origarraysize);
             for(int i=0; i<origarraysize; i++){
-                array[i] = orig.array[i];
+                int segarraysize = orig.array[i].size();
+                for(int j=0; j<segarraysize; j++){
+                    array[i].resize(segarraysize);
+                    array[i][j] = orig.array[i][j];
+                }
             }
         }
-        virtual ~HashTableDoubleHashing(){
+        virtual ~PerfectHashTable(){
             makeEmpty();
         }
 
@@ -48,15 +56,26 @@ class HashTableDoubleHashing {
             currentSize = 0;
             int arraysize = array.size();
             for(int i=0; i<arraysize; i++){
-                array[i].info = EMPTY;
+                int segarraysize = array[i].size();
+                for(int j=0; j<segarraysize; j++){
+                    array[i][j].info = EMPTY;
+                }
             }
         }
+
         void insert(const HashedObj& x){
             //insert x as active
-            int currentPos = findPos(x);
-            if(!isActive(currentPos)){
-                array[currentPos] = HashEntry(x, ACTIVE);
 
+            /**
+             *  Perfect Hash function
+             *  h(i) =  array[h1(i)][h2(i)]
+            */
+
+            int pos1 = hash(x);
+            int pos2 = findPos(x);
+
+            if(!isActive(pos1,pos2)){
+                array[pos1][pos2] = HashEntry(x, ACTIVE);
                 int arraysize = array.size();
                 if(++currentSize > arraysize/2){
                     rehash();
@@ -65,22 +84,27 @@ class HashTableDoubleHashing {
         }
 
         void remove(const HashedObj& x){
-            int currentPos = findPos(x);
-            if(isActive(currentPos)){
-                array[currentPos].info = DELETED;
+            int pos1 = hash(x);
+            int pos2 = findPos(x);
+            if(isActive(pos1,pos2)){
+                array[pos1][pos2].info = DELETED;
             }
         }
 
         void printArray(){
             int arraysize = array.size();
-            for(int i=0; i<arraysize; i++){
-                if(array[i].info == ACTIVE){
-                    cout << array[i].element << " ";
-                }else if(array[i].info == DELETED){
-                    cout << array[i].element << "D ";
-                }else if(array[i].info == EMPTY){
-                    cout << " E ";
+            for(int i=0; i<arraysize; i++){ 
+                int segarraysize = array[i].size();
+                for(int j=0; j<segarraysize; j++){
+                    if(array[i][j].info == ACTIVE){
+                        cout << array[i][j].element << " ";
+                    }else if(array[i][j].info == DELETED){
+                        cout << array[i][j].element << "D ";
+                    }else if(array[i][j].info == EMPTY){
+                        cout << " E ";
+                    }
                 }
+                cout <<"\n ---------------------------------------------------- \n";
             }
         }
 
@@ -97,77 +121,88 @@ class HashTableDoubleHashing {
             }
         };
 
-        vector<HashEntry> array;
+        vector<vector<HashEntry>> array;
         int currentSize;
 
 
-        bool isActive(int currentPos)const{
-            return array[currentPos].info == ACTIVE;
+        bool isActive(int pos1, int pos2)const{
+            return array[pos1][pos2].info == ACTIVE;
         }
+
         int findPos(const HashedObj& x)const{
-            int currentPos = myhash(x);
-            int offset = 1;
+            int pos1 = hash(x);
+            int pos2 = seghash(x);
+
             /**
-             *  Double Hashing:
+             *  Perfect Hash function
              *  h(i) = h1(i) + i * h2(i) mod size
             */
-            while(array[currentPos].info != EMPTY && array[currentPos].element != x ){     
-                currentPos = (currentPos + offset * seghash(x));
-                int arraysize = array.size();
-                if(currentPos >= arraysize){
-                    currentPos -= arraysize;
+            while(array[pos1][pos2].info != EMPTY && array[pos1][pos2].element != x ){     
+                pos2++;
+                int segarraysize = array[pos1].size();
+                if(pos2 >= segarraysize){
+                    pos2 -= segarraysize;
                 }
+
             }
-            cout <<  x <<" = currentpos = " << currentPos << endl;
-            return currentPos;
+            return pos2;
         }
         /**
          * Rehashing for quadratic probing hash table
         */
         void rehash(){
-            vector<HashEntry> oldArray = array;
+            vector< vector<HashEntry> > oldArray = array;
 
             //create new double-sized, empty table
             int oldarraysize = oldArray.size();
             array.resize(nextPrime(2 * oldarraysize));
             int arraysize = array.size();
             for(int i=0; i<arraysize; i++){
-                array[i].info = EMPTY;
+                //Corresponding extended array space
+                array[i].resize(pow(i+1,2));
+                int segarraysize = array[i].size();
+                for(int j=0; j<segarraysize; j++){
+                    array[i][j].info = EMPTY;
+                }
             }
+
 
             //copy table over
             currentSize = 0;
             for(int i=0; i<oldarraysize; i++){
-                if(oldArray[i].info == ACTIVE){
-                    insert(oldArray[i].element);
+                int segoldarraysize = oldArray[i].size();
+                for(int j=0; j<segoldarraysize; j++){
+                    if(oldArray[i][j].info == ACTIVE){
+                        insert(oldArray[i][j].element);
+                    }
                 }
-            }
-        }
-        int myhash(const HashedObj& x)const{
-            int hashVal = hash(x);  
 
-            hashVal %= array.size();
-            if(hashVal < 0){
-                hashVal += array.size();
             }
-            return hashVal;
         }
+
+
 
         /**
          * hash function of int 
+         * h(k) = ((ak + b) mod p ) mod size;
         */
         int hash(const int& key) const{
-            int hashVal = key;
-            hashVal %= array.size();
+            int a = 3;
+            int b = 42;
+            int p = 101;
+            int hashVal = (a * key + b) % p % array.size();
+            
             if(hashVal < 0){
                 hashVal += array.size();
             }
+
             return hashVal;
         }
 
 
         /**
          * hash function of string
+         * h(k) = ((ak + b) mod p ) mod size;
         */
         int hash(const string& key) const {
             int hashVal = 0;
@@ -175,7 +210,11 @@ class HashTableDoubleHashing {
                 hashVal = 37 * hashVal + key[i];
             }
 
-            hashVal %= array.size();
+            int a = 3;
+            int b = 42;
+            int p = 101;
+            hashVal = ( (a * hashVal + b) % p) % array.size();
+
             if(hashVal < 0){
                 hashVal += array.size();
             }
@@ -184,14 +223,16 @@ class HashTableDoubleHashing {
         }
 
         /***
-         *  The second hashing function of int
-         *  h(k) = prime(size/2) - k mod size
+         *  The second hashing function
+         *  h(k) = ((ajk + bj) mod p ) mod sizej;
          */
         int seghash(const int& key) const {
-            int arraysize = array.size();
-            int mod = nextPrime(arraysize / 2);
-            int hashVal = mod - key;
-            hashVal %= array.size();
+            int aj = 42;
+            int bj = 3; 
+            int p = 101;
+            
+            int hashVal = ( (aj * key + bj) % p) % array[hash(key)].size();
+
             if(hashVal < 0){
                 hashVal += array.size();
             }
@@ -200,7 +241,7 @@ class HashTableDoubleHashing {
 
         /***
          *  The second hashing function of string
-         *  h(k) = prime(size/2) - k mod size
+         *  h(k) = ((ajk + bj) mod p ) mod sizej;
          */
         int seghash(const string& key) const {
             int hashVal = 0;
@@ -208,16 +249,17 @@ class HashTableDoubleHashing {
                 hashVal = 37 * hashVal + key[i];
             }
 
-            int arraysize = array.size();
-            int mod = nextPrime(arraysize / 2);
+            int aj = 42;
+            int bj = 3; 
+            int p = 101;
+            hashVal = ( (aj * hashVal + bj) % p) % array[hash(key)].size();
 
-            hashVal = mod - hashVal;
-            hashVal %= array.size();
             if(hashVal < 0){
                 hashVal += array.size();
             }
             return hashVal;
         }
+
 
 
         /**
@@ -244,5 +286,5 @@ class HashTableDoubleHashing {
 
 };
 
-#endif /* HASHTABLEDOUBLEHASHING_H */
+#endif /* PERFECTHASHTABLE_H */
 

@@ -35,11 +35,15 @@
       - 5.2.1: Linear probing
       - 5.2.2: Quadratic probing
       - 5.2.3: Double hashing
+   - 5.3: Perfect Hash Table
 - 6- Heaps  
    - 6.1: Binary Heap  
    - 6.2: d-Heaps  
-   - 6.3: Leftist Heaps  
-   - 6.4: Skew Heaps  
+   - 6.3: Leftist Heap  
+   - 6.4: Skew Heap 
+   - 6.5: Binomial Queue
+   - 6.6: Pairing Heap
+   - 6.7: Fibonacci Heap
 - 7- Graph  
 ----------------------------------------------
 
