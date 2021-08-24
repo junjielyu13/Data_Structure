@@ -49,7 +49,9 @@ class PerfectHashTable {
         }
 
         bool contains(const HashedObj& x)const{
-            return isActive(findPos(x));
+            int pos1 = hash(x);
+            int pos2 = findPos(x);
+            return isActive( pos1,pos2      · );
         }
 
         void makeEmpty(){

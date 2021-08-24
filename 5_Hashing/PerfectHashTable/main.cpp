@@ -29,6 +29,20 @@ int main(int argc, char** argv) {
 
     cout << "\n--------------------------------------------------------------------------------------\n";
 
+    if(test1.contains(10)){
+        cout << "find"<< endl;
+    }else{
+        cout << "not find"<< endl;
+    }
+
+    if(test1.contains(99)){
+        cout << "find"<< endl;
+    }else{
+        cout << "not find"<< endl;
+    }
+
+    cout << "\n--------------------------------------------------------------------------------------\n";
+
     PerfectHashTable<int> test2(test1);
     test1.remove(10);
     test2.printArray();

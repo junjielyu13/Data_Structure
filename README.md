@@ -38,7 +38,9 @@
    - 5.3: Perfect Hash Table
 - 6- Heaps  
    - 6.1: Binary Heap  
-   - 6.2: d-Heaps  
+      - 6.1.1: Minimum Binary Heap 
+      - 6.1.2: Maximum Binary Heap
+   - 6.2: d-Heap  
    - 6.3: Leftist Heap  
    - 6.4: Skew Heap 
    - 6.5: Binomial Queue
