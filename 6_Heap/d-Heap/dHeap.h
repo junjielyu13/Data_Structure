@@ -5,45 +5,54 @@
  */
 
 /* 
- * File:   MinimumBinaryHeap.h
+ * File:   dHeap.h
  * Author: Junjie_Li
  *
- * Created on August 24, 2021, 8:42 PM
+ * Created on August 24, 2021, 9:43 PM
  */
 
 #include <vector>
 #include <stdexcept>
+#include <iostream>
+#include <math.h>
 
 using namespace std;
 
-
-#ifndef MINIMUMBINARYHEAP_H
-#define MINIMUMBINARYHEAP_H
+#ifndef DHEAP_H
+#define DHEAP_H
 
 template<typename Comparable>
-class MinimumBinaryHeap {
+class dHeap {
 
     public:
-        explicit MinimumBinaryHeap(int capacity = 100){
+        /**
+         * d = 2 --> binaryHeap;
+         * d = 3 --> 3-Heap;
+         * d = 4 --> 4-Heap;
+         * ...
+        */
+        explicit dHeap(int dimension = 2, int capacity = 100){      
+            d_ary = dimension;
             array.resize(capacity);
             currentSize = 0;
         }
-        explicit MinimumBinaryHeap(const vector<Comparable>& items): array(items.size()+10), currentSize(items.size()){
+        explicit dHeap(const vector<Comparable>& items): array(items.size()+10), currentSize(items.size()){
             for(int i=0; i<items.size(); i++){
                 array[i+1] = items[i];
             }
             buidHeap();
         }
-        MinimumBinaryHeap(const MinimumBinaryHeap& orig){
+        dHeap(const dHeap& orig){
+            d_ary = orig.d_ary;
             array.resize(orig.array.size());
             currentSize = orig.currentSize;
 
             for(int i=0; i<orig.array.size(); i++){
                 array[i] = orig.array[i];
             }
-        }
 
-        virtual ~MinimumBinaryHeap(){
+        }
+        virtual ~dHeap(){
             makeEmpty();
         }
 
@@ -52,25 +61,27 @@ class MinimumBinaryHeap {
         }
 
         const Comparable& findMin()const{
-            return array[1];
+            return array[0];
         }
-
 
         /**
          * Insert item x, allowing duplicates;
         */
         void insert(const Comparable& x){
             if(currentSize == array.size()-1){
-                array.resize(array.size() * 2);
+                array.resize(array.size() * d_ary);
             }
-
+            
             //Percolate up
-            int hole = ++currentSize;
-            for( ; hole>1 && x<array[hole/2]; hole/=2){
-                array[hole] = array[hole/2];
-            }
+            int hole = currentSize;
+            currentSize++;
             array[hole] = x;
 
+            Comparable temp = array[hole];
+            for( ; hole>0 && temp<array[(hole - 1)/d_ary]; hole = ((hole - 1)/d_ary)){ 
+                array[hole] = array[((hole - 1)/d_ary)];  
+            }
+            array[hole] = temp;
         }
 
         /**
@@ -80,9 +91,11 @@ class MinimumBinaryHeap {
             if(isEmpty()){
                 throw out_of_range("Exception: Underflow.");
             }
-            array[1] = array[currentSize--];
-            percolateDown(1);
+            array[0] = array[currentSize-1];
+            currentSize--;
+            percolateDown(0);
         }
+
         /**
          * Remove the minimum item and place it in minItem
         */
@@ -90,11 +103,10 @@ class MinimumBinaryHeap {
             if(isEmpty()){
                 throw out_of_range("Exception: Underflow.");
             }
-            minItem = array[1];
-            array[1] = array[currentSize--];
-            percolateDown(1);
+            minItem = array[0];
+            array[0] = array[currentSize--];
+            percolateDown(0);
         }
-
 
         void makeEmpty(){
             while(!array.empty()){
@@ -103,49 +115,65 @@ class MinimumBinaryHeap {
         }
 
         void print(){
-            for(int i = 1; i<=currentSize; i++){
+            for(int i = 0; i<currentSize; i++){
                 cout << array[i] << " ";
             }
         }
 
     private:
-        int   currentSize;    
-        typename::vector<Comparable> array;       //The heap array;
+        int   d_ary;          //d children
+        int   currentSize;   
+        typename::vector<Comparable> array;       //The heap array; 
 
         /**
          * Establish heap order property from an arbitrary
          * arrangement of items. Runs in linear time.
         */
         void buidHeap(){
-            for(int i=currentSize/2; i>0; i--){
+            for(int i=currentSize/d_ary; i>0; i--){
                 percolateDown(i);
             }
         }
-
+        
         /**
          * Iternal method to percolate down in the heap.
          * hole is the index at which the percolate begins
         */
         void percolateDown(int hole){
-            int child;
+            int child = 0;
             Comparable temp =array[hole];
 
-            for( ; hole*2 <= currentSize; hole = child){
-                child = hole * 2;
-                if(child != currentSize && array[child+1] < array[child]){
-                    child++;
-                }
+            for( ; hole*d_ary+1 < currentSize; hole = child){
+                
+                child = smallestChild(hole);
+
                 if(array[child] < temp){
                     array[hole] = array[child];
                 }else{
                     break;
                 }
             }
-
             array[hole] = temp;
+        }
+
+        /**
+         * Function to get smallest child from all valid indices 
+         */
+        int smallestChild(int hole){
+            int PosChild = hole*d_ary+1;
+            int i = 2;
+            int ChooseChild = hole*d_ary+i;
+            while( (i <= d_ary) && (ChooseChild < currentSize)){
+                if(array[ChooseChild] < array[PosChild]){
+                    PosChild = ChooseChild;
+                }
+                i++;
+                ChooseChild = hole*d_ary+i;
+            }
+            return PosChild;
         }
 
 };
 
-#endif /* MINIMUMBINARYHEAP_H */
+#endif /* DHEAP_H */
 

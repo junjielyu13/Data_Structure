@@ -27,7 +27,7 @@ int main(int argc, char** argv) {
     }
 
     MinimumBinaryHeap<int> test2(test1);
-
+    
     while(!test1.isEmpty()){
         cout << test1.findMin() << " ";
         test1.deleteMin();
