@@ -36,9 +36,10 @@ class dHeap {
             array.resize(capacity);
             currentSize = 0;
         }
-        explicit dHeap(const vector<Comparable>& items): array(items.size()+10), currentSize(items.size()){
+        explicit dHeap(const vector<Comparable>& items, int dimension = 2): array(items.size()+10), currentSize(items.size()){
+            d_ary = dimension;
             for(int i=0; i<items.size(); i++){
-                array[i+1] = items[i];
+                array[i] = items[i];
             }
             buidHeap();
         }
@@ -130,7 +131,7 @@ class dHeap {
          * arrangement of items. Runs in linear time.
         */
         void buidHeap(){
-            for(int i=currentSize/d_ary; i>0; i--){
+            for(int i=currentSize/d_ary; i>=0; i--){
                 percolateDown(i);
             }
         }

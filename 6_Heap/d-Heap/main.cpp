@@ -13,6 +13,7 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <vector>
 #include "dHeap.h"
 
 using namespace std;
@@ -84,6 +85,24 @@ int main(int argc, char** argv) {
     while(!test5.isEmpty()){
         cout << test5.findMin()<< " ";
         test5.deleteMin();
+    }
+
+
+    cout << "\n---------------------------------------------------\n";
+
+    vector<int> list;
+    for(int i=0; i<20; i++){
+        int numrandinsert  = rand();
+        std::cout << "numrandinsert = " << numrandinsert << endl; 
+        list.push_back(numrandinsert);
+    }
+
+    dHeap<int> test6(list,6);
+    test6.print();
+    cout << endl;
+    while(!test6.isEmpty()){
+        cout << test6.findMin()<< " ";
+        test6.deleteMin();
     }
 
 

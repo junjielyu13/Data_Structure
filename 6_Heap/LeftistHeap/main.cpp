@@ -12,13 +12,34 @@
  */
 
 #include <cstdlib>
+#include <iostream>
+#include "LeftistHeap.h"
 
 using namespace std;
 
-/*
- * 
- */
 int main(int argc, char** argv) {
+
+    LeftistHeap<int> test1;
+    for(int i=0; i<20; i++){
+        int numrandinsert  = rand();
+        std::cout << "numrandinsert = " << numrandinsert << endl; 
+        test1.insert(numrandinsert);
+    }
+
+    cout << "\npreorder: ";
+    test1.printPreorderTree();
+    cout << "\ninorder : ";
+    test1.printInorderTree();
+
+    LeftistHeap<int> test2(test1);
+    
+    cout << endl;
+    while(!test1.isEmpty()){
+        cout << test1.findMin() << " ";
+        test1.deleteMin();
+    }
+
+    cout <<"\n----------------------------------------------\n";
 
     return 0;
 }

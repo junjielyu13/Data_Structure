@@ -100,6 +100,12 @@ class MaximumBinaryHeap {
             }
         }
 
+        void print(){
+            for(int i=1; i<=currentSize;i++){
+                cout << array[i] << " ";
+            }
+        }
+
     private:
         int   currentSize;    
         typename::vector<Comparable> array;       //The heap array;

@@ -13,6 +13,7 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <vector>
 #include "MaximumBinaryHeap.h"
 
 using namespace std;
@@ -38,6 +39,23 @@ int main(int argc, char** argv) {
         cout << test2.findMax() << " ";
         test2.deleteMax();
     }
+
+    cout << "\n---------------------------------------------------\n";
+    vector<int> list;
+    for(int i=0; i<20; i++){
+        int numrandinsert  = rand();
+        std::cout << "numrandinsert = " << numrandinsert << endl; 
+        list.push_back(numrandinsert);
+    }
+    
+    MaximumBinaryHeap<int> test6(list);
+    test6.print();
+    cout << endl;
+    while(!test6.isEmpty()){
+        cout << test6.findMax()<< " ";
+        test6.deleteMax();
+    }
+
 
     cout << "\nfinish";
 
