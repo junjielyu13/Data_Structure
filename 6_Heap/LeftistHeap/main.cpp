@@ -31,15 +31,35 @@ int main(int argc, char** argv) {
     cout << "\ninorder : ";
     test1.printInorderTree();
 
-    LeftistHeap<int> test2(test1);
+    LeftistHeap<int> test2;
     
-    cout << endl;
+    cout <<"\n----------------------------------------------\n";
+
+    
+    test2.makeEmpty();
+    for(int i=0; i<20; i++){
+        int numrandinsert  = rand();
+        std::cout << "numrandinsert = " << numrandinsert << endl; 
+        test2.insert(numrandinsert);
+    }
+
+    test1.merge(test2);
+    cout << "\npreorder: ";
+    test1.printPreorderTree();
+    cout << "\ninorder : ";
+    test1.printInorderTree();
+
+    cout <<"\n----------------------------------------------\n";
+
+
+    cout << "merge: " << endl;
     while(!test1.isEmpty()){
         cout << test1.findMin() << " ";
         test1.deleteMin();
     }
 
     cout <<"\n----------------------------------------------\n";
+
 
     return 0;
 }

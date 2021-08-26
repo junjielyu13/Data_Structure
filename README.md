@@ -44,8 +44,9 @@
    - 6.3: Leftist Heap  
    - 6.4: Skew Heap 
    - 6.5: Binomial Queue
-   - 6.6: Pairing Heap
-   - 6.7: Fibonacci Heap
+   - 6.6: Priority Queue
+   - 6.7: Pairing Heap
+   - 6.8: Fibonacci Heap
 - 7- Graph  
 ----------------------------------------------
 
