@@ -31,10 +31,13 @@ int main(int argc, char** argv) {
 
     test1.Union(test2);
 
-    while(test1.isEmpty()){
+
+    while(!test1.isEmpty()){
         cout << test1.findMin() << " ";
         test1.Extract_Min();
     }
+
+    cout << "\n-------------------------------------------------\n";
 
     return 0;
 }

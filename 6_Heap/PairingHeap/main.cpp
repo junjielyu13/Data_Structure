@@ -12,13 +12,38 @@
  */
 
 #include <cstdlib>
+#include <iostream>
+#include "PairingHeap.h"
 
 using namespace std;
 
-/*
- * 
- */
+
 int main(int argc, char** argv) {
+
+    PairingHeap<int> test1;
+    for(int i=0; i<20; i++){
+        test1.insert(rand());
+    }
+
+    PairingHeap<int> test3(test1);
+
+
+    PairingHeap<int> test2;
+
+    for(int i=0; i<20; i++){
+        test2.insert(rand());
+    }
+
+    test1.merge(test2);
+
+    while (!test1.isEmpty()){
+        cout << test1.findMin() << " ";
+        test1.deleteMin();
+    }
+
+    cout << "\n------------------------------------------------------------\n";
+
+    
 
     return 0;
 }

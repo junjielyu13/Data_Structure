@@ -23,12 +23,27 @@ using namespace std;
 
 template<typename Comparable>
 class PairingHeap {
+
+    private:
+        struct PairNode{
+            Comparable element;
+            PairNode* prev;
+            PairNode* leftChild;
+            PairNode* nextSibling;
+
+            PairNode(const Comparable& theElement, PairNode* pv=nullptr, PairNode* lt=nullptr, PairNode* rt=nullptr):
+                element(theElement), prev(pv), leftChild(lt), nextSibling(rt){
+            }
+        };
+
+
     public:
         PairingHeap(){
             root = nullptr;
         }
         PairingHeap(const PairingHeap& orig){
             makeEmpty();
+            root = nullptr;
             *this = orig;
         }
         virtual ~PairingHeap(){
@@ -36,7 +51,7 @@ class PairingHeap {
             root = nullptr;
         }
 
-        const Comparable& findMind(){
+        const Comparable& findMin(){
             return root->element;
         }
 
@@ -44,14 +59,13 @@ class PairingHeap {
          * Insert item x into the priority queue, maintaining heap order.
          * Return the position (a pointer to the node) containing the new item
         */
-        PairNode* insert(const Comparable& x){  
+        void insert(const Comparable& x){  
             PairNode* newNode = new PairNode(x);
             if(root == nullptr){
                 root = newNode;
             }else{
                 compareAndLink(root,newNode);
             }
-            return newNode;
         }
 
         /**
@@ -68,7 +82,7 @@ class PairingHeap {
             }else{
                 root = combineSiblings(root->leftChild);
             }
-            return oldRoot;
+            delete oldRoot;
         }
 
         /**
@@ -120,27 +134,17 @@ class PairingHeap {
             }
         }
 
-        const PairingHeap& operator=(const PairingHeap& rhs){
+        const PairingHeap& operator=(const PairingHeap<Comparable>& rhs){
             if(this != &rhs){
                 makeEmpty();
-                root = clone(root);
+                cout << "test3";
+                root = clone(rhs.root);
             }
-
             return *this;
         }
 
 
     private:
-        struct PairNode{
-            Comparable element;
-            PairNode* prev;
-            PairNode* leftChild;
-            PairNode* nextSibling;
-
-            PairNode(const Comparable& theElement, PairNode* pv=nullptr, PairNode* lt=nullptr, PairNode* rt=nullptr):
-                element(theElement), pv(prev), leftChild(lt), nextSibling(rt){
-            }
-        };
 
         PairNode* root;
 
@@ -169,13 +173,13 @@ class PairingHeap {
             }else{
                 //Attach second as leftmost child of first
                 second->prev = first;
-                first->nextSibling = second->nextSibling
+                first->nextSibling = second->nextSibling;
                 if(first->nextSibling != nullptr){
                     first->nextSibling->prev = first;
                 }
                 second->nextSibling = first->leftChild;
                 if(second->nextSibling != nullptr){
-                    second->nextSsibling->prev = second;
+                    second->nextSibling->prev = second;
                 }
                 first->leftChild = second;
             }
@@ -191,7 +195,7 @@ class PairingHeap {
             }
 
             //Allocate the arry
-            static vector<PairNode*> treeArray(5);
+            static typename::vector<PairNode*> treeArray(5);
 
             //Store the subtrees in an array
             int numSibling = 0;
@@ -234,6 +238,7 @@ class PairingHeap {
             if(t == nullptr){
                 return nullptr;
             }
+            cout << "t->element: "<< t->element << endl;
             return new PairNode(t->element, clone(t->prev), clone(t->leftChild), clone(t->nextSibling));
         }
 

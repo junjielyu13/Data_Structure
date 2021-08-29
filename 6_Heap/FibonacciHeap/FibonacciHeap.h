@@ -31,6 +31,7 @@ class FibonacciHeap {
         // FibonacciHeap(const FibonacciHeap& orig);
         virtual ~FibonacciHeap(){
             makeEmpty();
+            minRoot = nullptr;
         }
 
 
@@ -39,6 +40,8 @@ class FibonacciHeap {
         */
         void Insert(const Comparable& key){
             FibonacciNode* x = new FibonacciNode(key);
+            x->left = x;
+            x->right = x;
             if(minRoot != nullptr){
                 minRoot->left->right = x;
                 x->right = minRoot;
@@ -112,7 +115,7 @@ class FibonacciHeap {
             FibonacciNode* temp = minRoot;
             FibonacciNode* ptr = temp;
             FibonacciNode* x = nullptr;
-            if(temp != nullptr){
+            if(temp->child != nullptr){
                 x = temp->child;
                 do{
                     //add child to the root list of heap
@@ -148,7 +151,7 @@ class FibonacciHeap {
         /**
          * Union two Fibonnaci Heap
         */
-        void Union(FibonacciHeap& rhs){
+        void Union(FibonacciHeap<Comparable>& rhs){
             minRoot->left->right = rhs.minRoot;
             rhs.minRoot->left->right = minRoot;
 
@@ -156,7 +159,7 @@ class FibonacciHeap {
             minRoot->left = rhs.minRoot->left;
             rhs.minRoot->left = temp;
 
-            if(rhs.minRoot != nullptr && rhs.minRoot->element < minRoot->element){
+            if( (minRoot == nullptr) || (rhs.minRoot != nullptr && rhs.minRoot->element < minRoot->element) ){
                 minRoot = rhs.minRoot;
             }
 
@@ -169,7 +172,7 @@ class FibonacciHeap {
         
         void makeEmpty(){
             while (!isEmpty()){
-                Extract_Min;
+                Extract_Min();
             }
         }
 
@@ -185,7 +188,8 @@ class FibonacciHeap {
             bool mark;          //black or white mark of the node
             char find;          //flag for assisting in the findnode function
 
-            FibonacciNode(const Comparable& theElement, FibonacciNode* pt = nullptr, FibonacciNode* lt = nullptr, FibonacciNode* rt = nullptr, FibonacciNode* cd = nullptr, int deg = 0, bool mk = false, char fd = 'N'):
+            FibonacciNode(const Comparable& theElement, FibonacciNode* pt = nullptr, FibonacciNode* lt = nullptr, FibonacciNode* rt = nullptr,
+                         FibonacciNode* cd = nullptr, int deg = 0, bool mk = false, char fd = 'N'):
                 element(theElement), parent(pt), left(lt), right(rt), child(cd), degree(deg), mark(mk), find(fd){
             }
         };
@@ -245,8 +249,8 @@ class FibonacciHeap {
                     array[j]->right = array[j];
                     if(minRoot != nullptr){
                         minRoot->left->right = array[j];
-                        array[j]->left = minRoot;
-                        array[j]->right = minRoot->left;
+                        array[j]->right = minRoot;
+                        array[j]->left = minRoot->left;
                         minRoot->left = array[j];
                         if(array[j]->element < minRoot->element){
                             minRoot = array[j];
