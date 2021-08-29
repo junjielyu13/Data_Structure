@@ -29,7 +29,9 @@ class FibonacciHeap {
             minRoot = nullptr;
         }
         // FibonacciHeap(const FibonacciHeap& orig);
-        // virtual ~FibonacciHeap();
+        virtual ~FibonacciHeap(){
+            makeEmpty();
+        }
 
 
         /**
@@ -165,6 +167,12 @@ class FibonacciHeap {
             return minRoot == nullptr;
         }
         
+        void makeEmpty(){
+            while (!isEmpty()){
+                Extract_Min;
+            }
+        }
+
 
     private:
         struct FibonacciNode{
