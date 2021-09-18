@@ -56,10 +56,6 @@
       - 7.2.1 Adjacency List
       - 7.2.2 Adjacency matrix
       - 7.2.3 Incidence matrix
-   - 7.3 Directed Graph with weight
-      - 7.3.1 Adjacency List
-      - 7.3.2 Adjacency matrix
-      - 7.3.3 Incidence matrix
 ----------------------------------------------
 
 
