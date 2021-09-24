@@ -41,7 +41,7 @@ class GraphAdjacencyMatrix {
 
             for(int i=0; i<maxVertices; i++){
                 for(int j=0; j<maxVertices; j++){
-                    edgeTable[i][j] = ( i == j) ? 0 : -1;
+                    edgeTable[i][j] = -1;
                 }
             }
         }
@@ -79,7 +79,7 @@ class GraphAdjacencyMatrix {
             verticesList[v] = verticesList[numVertices-1];
 
             for(int i=0; i<numVertices; i++){
-                if(edgeTable[i][v] > 0 && edgeTable[i][v] != -1){
+                if(edgeTable[i][v] > 0){
                     numEdges--;                    
                 }
             }
