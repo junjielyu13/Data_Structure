@@ -12,13 +12,52 @@
  */
 
 #include <cstdlib>
+#include <iostream>
+#include "GraphAdjacencyList.h"
 
 using namespace std;
 
-/*
- * 
- */
 int main(int argc, char** argv) {
+
+    GraphAdjacencyList<int,int> graph;
+
+    graph.insertVertex(1);
+    graph.insertVertex(2);
+    graph.insertVertex(3);
+    graph.insertVertex(4);
+    graph.insertVertex(5);
+    graph.insertVertex(6);
+
+
+
+    graph.insertEdge(1,2,12);
+    graph.insertEdge(1,4,14);
+
+    graph.insertEdge(2,5,25);
+
+    graph.insertEdge(3,6,36);
+    graph.insertEdge(3,5,35);
+
+    graph.insertEdge(4,2,42);
+
+    graph.insertEdge(5,4,54);
+
+    graph.insertEdge(6,6,66);
+
+
+    graph.printGraphList();
+
+    cout << "-------------------------------------------------------------" << endl;
+
+    graph.removeVertex(2);
+    graph.printGraphList();
+
+    cout << "-------------------------------------------------------------" << endl;
+
+    graph.removeEdge(3,5);
+    graph.printGraphList();
+
+    return 0;
 
     return 0;
 }

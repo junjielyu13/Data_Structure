@@ -191,8 +191,6 @@ class GraphAdjacencyList {
                 }
                 p = p->link;
             }
-
-
         }
 
         void removeEdge(V vertex1, V vertex2){
