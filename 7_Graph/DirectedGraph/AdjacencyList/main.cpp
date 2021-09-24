@@ -58,7 +58,5 @@ int main(int argc, char** argv) {
     graph.printGraphList();
 
     return 0;
-
-    return 0;
 }
 
