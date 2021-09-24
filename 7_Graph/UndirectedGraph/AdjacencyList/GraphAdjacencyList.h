@@ -19,34 +19,39 @@
 
 using namespace std;
 
+
 template <class V, class E>
 class GraphAdjacencyList {
 
     private:
+
+        template <class A, class C>
         struct Edge{
 
             int dest;           //The position of the other vertex of the edge     
             E cost;             //Weight
-            Edge<V,E>* link;    //Next edge
+            Edge<A,C>* link;    //Next edge
 
-            Edge(int num, E weight):dest(num), cost(weight), link(nullptr){
+            Edge(){
             }
 
-            bool operator!=(Edge<V,E>& R)const{
-                return dest!=R.dest
+            Edge(int num, C weight):dest(num), cost(weight), link(nullptr){
+            }
+
+            bool operator!=(Edge<A,C>& R)const{
+                return dest!=R.dest;
             }
             
         };
 
-
+        template <class A, class C>
         struct Vertex{
-            V data;         //name of vertex
-            Edge<V.E>* adj; //list of vertex
+            A data;         //name of vertex
+            Edge<A, C>* adj; //list of vertex
         };
-        
-        
 
-        enum {DEFAULT_VERTICES = 100};
+
+        enum {DEFAULT_VERTICES = 20};
 
 
     public:
@@ -54,10 +59,11 @@ class GraphAdjacencyList {
             maxVertices = size;
             numEdges = 0;
             numVertices = 0;
-            VertexTable  = new VertexTable[maxVertices];
+            VertexTable  = new Vertex<V,E>[maxVertices];
+            
             
             for(int i=0; i<maxVertices; i++){
-                VertexTable[i] = 0;
+                VertexTable[i].adj = nullptr;
             }
         }
 
@@ -69,7 +75,7 @@ class GraphAdjacencyList {
             for(int i=0; i<numVertices; i++){
                 Edge<V,E>* p = VertexTable[i].adj;
                 while(p!=nullptr){
-                    VertexTable[i].adj = p->link
+                    VertexTable[i].adj = p->link;
                     delete p;
                     p = VertexTable[i].adj;
                 }
@@ -77,12 +83,17 @@ class GraphAdjacencyList {
             delete []VertexTable;
         }
 
-        T getValue(int v){
-            return (v >= 0 && i < numVertices)? VertexTable[i] : 0;
+        V getValue(V vertex){
+            int pos = getVertexPos(vertex);
+            return (pos >= 0 && pos < numVertices) ? VertexTable[pos].data : 0;
         }
 
-        E getWeight(int v1, int v2){
-            Edge<V,E>* P = VertexTable[v1].adj;
+        E getWeight(V vertex1, V vertex2){
+
+            int v1 = getVertexPos(vertex1);
+            int v2 = getVertexPos(vertex2);
+
+            Edge<V,E>* p = VertexTable[v1].adj;
             while(p!=nullptr && p->dest!=v2){
                 p = p->link;
             }
@@ -92,21 +103,21 @@ class GraphAdjacencyList {
             return 0;
         }
 
-        void insertVertex(const T& vertex){
+        void insertVertex(const V& vertex){
             
             if(numVertices == maxVertices){
                 reserva(numVertices*2);
             }
 
-            VertexTable[numVertices].data == vertex;
+            VertexTable[numVertices].data = vertex;
             numVertices++;
 
         }
 
-        void insertEdge(int v1, int v2, E weight){
-            if(v1 < 0 && v1 > numVertices && v2 < 0 && v2 > numVertices){
-                throw invalid_argument("Exception: argument incorrect.")
-            }
+        void insertEdge(V vertex1, V vertex2, E weight){
+
+            int v1 = getVertexPos(vertex1);
+            int v2 = getVertexPos(vertex2);
 
             Edge<V,E> *q, *p = VertexTable[v1].adj;
 
@@ -114,7 +125,7 @@ class GraphAdjacencyList {
                 p = p->link;
             }
             if(p != nullptr){
-                throw invalid_argument("Exception: edge exist.")
+                throw invalid_argument("Exception: exist.");
             }
 
             q = new Edge<V,E>;
@@ -134,12 +145,11 @@ class GraphAdjacencyList {
             numEdges++;
         }
 
-        void removeVertex(int v){
-            if(numVertices == 1 || v < 0 || v >= numVertices){
-                throw out_of_range("Exception: out of range.");
-            }
+        void removeVertex(V vertex){
 
-            Edge<V,E>  *p, *q, *s, *t;
+            int v = getVertexPos(vertex);
+
+            Edge<V,E>  *p, *s, *t;
             int k;
 
             while(VertexTable[v].adj != nullptr){
@@ -170,23 +180,27 @@ class GraphAdjacencyList {
             p = VertexTable[v].adj = VertexTable[numVertices].adj;
 
             while(p != nullptr){
-                if(s->dest == numVertices){
-                    s->dest = v;
-                    break;
-                }else{
-                    s = s->link;
+                s = VertexTable[p->dest].adj;
+                while(p != nullptr){
+                    if(s->dest == numVertices){
+                        s->dest = v;
+                        break;
+                    }else{
+                        s = s->link;
+                    }
                 }
                 p = p->link;
             }
 
+
         }
 
-        void removeEdge(int v1, int v2){
-            if(v1 < 0 && v1 > numVertices && v2 < 0 && v2 > numVertices){
-                throw invalid_argument("Exception: argument incorrect.")
-            }
+        void removeEdge(V vertex1, V vertex2){
 
-            Edge<V,E> *p = VertexTable[v1].adj, *q =nullptr, *s = p;
+            int v1 = getVertexPos(vertex1);
+            int v2 = getVertexPos(vertex2);
+
+            Edge<V,E> *p = VertexTable[v1].adj, *q = nullptr, *s = p;
             while(p != nullptr && p->dest != v2){
                 q = p;
                 p = p->link;
@@ -195,23 +209,36 @@ class GraphAdjacencyList {
                 if(p == s){
                     VertexTable[v1].adj = p->link;
                 }else{
-                    q->link = p->link;
+                    if(p == nullptr){
+                        q->link = nullptr;
+                    }else{
+                        q->link = p->link;
+                    }
                 }
                 delete p;
             }else{
                 throw invalid_argument("Exception: can't find edge");
             }
 
-            p = VertexTable[v2].adj; q =nullptr; s = p;
+            p = VertexTable[v2].adj; 
+            q = nullptr; 
+            s = p;
+
             while(p != nullptr && p->dest != v1){
                 q = p;
                 p = p->link;
             }
+
             if(p == s){
                 VertexTable[v2].adj = p->link;
             }else{
-                q->link = p->link;
+                if(p == nullptr){
+                    q->link = nullptr;
+                }else{
+                    q->link = p->link;
+                }
             }
+
             delete p;
         }
 
@@ -237,10 +264,10 @@ class GraphAdjacencyList {
             }    
 
             Vertex<V,E>* oldVertexTable = VertexTable;
-            VertexTable = new VertexTable[newCapacity];
+            VertexTable = new Vertex<V,E>[newCapacity];
 
             for(int i=0; i<maxVertices; i++){
-                VertexTable[i] = 0;
+                VertexTable[i].adj = nullptr;
             }
 
             for(int i=0; i<this->numVertices; i++){
@@ -252,30 +279,17 @@ class GraphAdjacencyList {
         }
 
 
-        void printGraphWeight(){
-            cout << "num vertex: " << numVertices << " , num edge: "<< numEdges << endl;
-            for(int i=0; i<numVertices; i++){
-                for(int j=i+1; j<numVertices; j++){
-                    E weight = getWeight(i,j);
-                    if(weight > 0){
-                        cout << getValue(i) << " , " << getValue(j) << " , " << weight << endl;
-                    }
-                }
-            }
-        }
-
-        void printGraphVertx(){
+        void printGraphList(){
             for(int i=0; i<numVertices; i++){
                 cout << VertexTable[i].data << " --> ";
                 Edge<V,E> *p = VertexTable[i].adj;
                 while(p != nullptr){
-                    cout << p->dest << " (cost : "<< p->cost << " ) --> ";
-                    p = p->link
+                    cout << VertexTable[p->dest].data<< " (cost : "<< p->cost << " ) --> ";
+                    p = p->link;
                 }
                 cout << endl;
             }
         }
-
 
 
     private:
@@ -285,8 +299,7 @@ class GraphAdjacencyList {
 
         Vertex<V,E>* VertexTable;
 
-
-        int getVertexPos(V vertex){
+        int getVertexPos(const V& vertex){
             for(int i=0; i<numVertices; i++){
                 if(VertexTable[i].data == vertex){
                     return i;
