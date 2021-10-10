@@ -47,15 +47,17 @@
    - 6.6: Priority Queue
    - 6.7: Fibonacci Heap
    - 6.8: Pairing Heap
-- 7- Graph  
-   - 7.1 Undirected Graph
-      - 7.1.1 Adjacency List
-      - 7.1.2 Adjacency matrix
-      - 7.1.3 Incidence matrix
-   - 7.2 Directed Graph
-      - 7.2.1 Adjacency List
-      - 7.2.2 Adjacency matrix
-      - 7.2.3 Incidence matrix
+- 7- The Disjoint Set 
+   - 7.1: Disjoint Set
+- 8- Graph  
+   - 8.1 Undirected Graph
+      - 8.1.1: Adjacency List
+      - 8.1.2: Adjacency matrix
+      - 8.1.3: Incidence matrix
+   - 8.2 Directed Graph
+      - 8.2.1: Adjacency List
+      - 8.2.2: Adjacency matrix
+      - 8.2.3: Incidence matrix
 ----------------------------------------------
 
 
