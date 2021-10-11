@@ -61,7 +61,7 @@ class DisjointSet {
             if(s[x] < 0){
                 return x;
             }else{
-                return s[x] = find(s[x]);
+                return find(s[x]);
             }
         }
 
@@ -73,14 +73,7 @@ class DisjointSet {
          * root2 is the root of set2.
         */
         void unioSets(int root1, int root2){
-            if(s[root2] < s[root1]){        //root2 is deeper
-                s[root1] = root2;           //Make root2 new root
-            }else{
-                if(s[root1] == s[root2]){
-                    s[root1]--;             //Update height if same
-                }                       
-                s[root2] = root1;           //Make root1 new root
-            }
+            s[root2] = root1;
         }
 
     private:
