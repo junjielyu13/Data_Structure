@@ -58,6 +58,16 @@
       - 8.2.1: Adjacency List
       - 8.2.2: Adjacency matrix
       - 8.2.3: Incidence matrix
+- 9- Sorting
+   - 9.1 Bubble Sort
+   - 9.2 Selection Sort
+   - 9.3 Insertion Sort
+   - 9.4 Shell Sort
+   - 9.5 Merge Sort
+   - 9.6 Quick Sort 
+   - 9.7 Heap Sort
+   - 9.8 Bucket Sort
+   - 9.9 Radix sort
 ----------------------------------------------
 
 
